@@ -34,7 +34,9 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
+			<groupId>org.antlr</groupId>
+			<artifactId>antlr4</artifactId>
+			<version>4.13.2</version>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
