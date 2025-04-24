@@ -1,4 +1,5 @@
-grammar mijava;
+grammar Mijava;
+
 
 program: mainClass classDecl*;
 
@@ -43,24 +44,6 @@ expression:
 	| NOT expression
 	| LPAREN expression RPAREN;
 
-MAIN: 'main';
-CLASS: 'class';
-PUBLIC: 'public';
-STATIC: 'static';
-VOID: 'void';
-RETURN: 'return';
-
-ID: [a-zA-Z]+ [a-zA-Z0-9_]*;
-
-INT: 'int';
-BOOLEAN: 'boolean';
-STRING: 'String';
-INTEGER_LITERAL: [0-9]+;
-
-ADD: '+';
-SUB: '-';
-DIV: '/';
-MUL: '*';
 
 LPAREN: '(';
 RPAREN: ')';
@@ -77,6 +60,20 @@ AND: '&&';
 LT: '<';
 GT: '>';
 
+ADD: '+';
+SUB: '-';
+DIV: '/';
+MUL: '*';
+
+MAIN: 'main';
+CLASS: 'class';
+PUBLIC: 'public';
+STATIC: 'static';
+VOID: 'void';
+RETURN: 'return';
+STRING: 'String';
+INT: 'int';
+BOOLEAN: 'boolean';
 IF: 'if';
 ELSE: 'else';
 WHILE: 'while';
@@ -86,3 +83,10 @@ TRUE: 'true';
 FALSE: 'false';
 THIS: 'this';
 NEW: 'new';
+
+
+ID: [a-zA-Z]+ [a-zA-Z0-9_]*;
+INTEGER_LITERAL: [0-9]+;
+
+
+WS: [ \t\r\n]+ -> skip;
