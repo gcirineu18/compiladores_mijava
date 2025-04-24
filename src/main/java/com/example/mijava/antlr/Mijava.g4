@@ -7,7 +7,7 @@ mainClass:
 	CLASS ID LBRACE PUBLIC STATIC VOID MAIN LPAREN STRING LBRACK RBRACK ID RPAREN LBRACE statement
 		RBRACE RBRACE;
 
-classDecl: CLASS ID LBRACK (varDecl)* (methodDecl)* RBRACK;
+classDecl: CLASS ID LBRACE (varDecl)* (methodDecl)* RBRACE;
 
 varDecl: type ID SEMI;
 
@@ -40,7 +40,7 @@ expression:
 	| ID
 	| THIS
 	| NEW INT LBRACK expression RBRACK
-	| NEW ID LBRACE RPAREN
+	| NEW ID LPAREN RPAREN
 	| NOT expression
 	| LPAREN expression RPAREN;
 
