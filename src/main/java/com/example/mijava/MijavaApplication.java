@@ -8,6 +8,7 @@ import com.example.mijava.antlr.MijavaParser;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.CharStreams;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -24,6 +25,7 @@ public class MijavaApplication {
         ParseTree tree = parser.program();
         System.out.println(tree.toStringTree(parser));
 	   //   SpringApplication.run(MijavaApplication.class, args);
+       
 	}
 
 }

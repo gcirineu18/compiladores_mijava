@@ -7,7 +7,7 @@ mainClass:
 	CLASS ID LBRACE PUBLIC STATIC VOID MAIN LPAREN STRING LBRACK RBRACK ID RPAREN LBRACE statement
 		RBRACE RBRACE;
 
-classDecl: CLASS ID LBRACE (varDecl)* (methodDecl)* RBRACE;
+classDecl: CLASS ID (EXTENDS ID)? LBRACE (varDecl)* (methodDecl)* RBRACE;
 
 varDecl: type ID SEMI;
 
@@ -33,6 +33,7 @@ expression:
 	expression (AND | LT | GT | ADD | SUB | MUL) expression
 	| expression LBRACK expression RBRACK
 	| expression DOT LENGTH
+
 	| expression DOT ID LPAREN (expression (COMMA expression)*)? RPAREN
 	| INTEGER_LITERAL
 	| TRUE
@@ -67,6 +68,7 @@ MUL: '*';
 
 MAIN: 'main';
 CLASS: 'class';
+EXTENDS: 'extends';
 PUBLIC: 'public';
 STATIC: 'static';
 VOID: 'void';
@@ -88,5 +90,6 @@ NEW: 'new';
 ID: [a-zA-Z]+ [a-zA-Z0-9_]*;
 INTEGER_LITERAL: [0-9]+;
 
-
+LINECOMMENT: '//' ~[\r\n]* -> skip;
+COMMENT: '/*' .*? '*/' -> skip;
 WS: [ \t\r\n]+ -> skip;
