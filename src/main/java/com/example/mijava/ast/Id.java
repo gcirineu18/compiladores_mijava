@@ -10,7 +10,6 @@ public class Id extends ASTNode{
     this.s  = str;
   }
 
-
   @Override
   public <T> T accept(ASTVisitor<T> visitor) {
   return visitor.visit(this);

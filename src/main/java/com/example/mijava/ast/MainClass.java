@@ -2,29 +2,21 @@ package com.example.mijava.ast;
 
 import com.example.mijava.visitor.ASTVisitor;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter @Getter
 public class MainClass extends ASTNode {
-    private String className;
-    private String argsName;
+    private Id className;
+    private Id argsName;
     private Statement statement;
 
-    public MainClass(String className, String argsName, Statement statement) {
+    public MainClass(Id className, Id argsName, Statement statement) {
         this.className = className;
         this.argsName = argsName;
         this.statement = statement;
     }
 
-    // Getters
-    public String getClassName() {
-        return className;
-    }
-
-    public String getArgsName() {
-        return argsName;
-    }
-
-    public Statement getStatement() {
-        return statement;
-    }
 
     @Override
     public <T> T accept(ASTVisitor<T> visitor) {

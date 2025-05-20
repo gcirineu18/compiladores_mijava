@@ -4,20 +4,24 @@ import java.util.List;
 
 import com.example.mijava.visitor.ASTVisitor;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
 public class MethodDecl extends ASTNode {
     private Type returnType;
-    private String methodName;
-    private List<Formal> parameters;
+    private Id methodName;
+    private FormalList parameter;
     private List<VarDecl> varDecls;
     private List<Statement> statements;
     private Expression returnExpression;
 
-    public MethodDecl(Type returnType, String methodName, List<Formal> parameters,
+    public MethodDecl(Type returnType, Id methodName, FormalList parameters,
                       List<VarDecl> varDecls, List<Statement> statements,
                       Expression returnExpression) {
         this.returnType = returnType;
         this.methodName = methodName;
-        this.parameters = parameters;
+        this.parameter = parameters;
         this.varDecls = varDecls;
         this.statements = statements;
         this.returnExpression = returnExpression;
@@ -28,12 +32,12 @@ public class MethodDecl extends ASTNode {
         return returnType;
     }
 
-    public String getMethodName() {
+    public Id getMethodName() {
         return methodName;
     }
 
-    public List<Formal> getParameters() {
-        return parameters;
+    public FormalList getParameters() {
+        return parameter;
     }
 
     public List<VarDecl> getVarDecls() {
