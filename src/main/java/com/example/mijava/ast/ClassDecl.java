@@ -7,13 +7,13 @@ import com.example.mijava.visitor.ASTVisitor;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter @Setter
+@Getter
+@Setter
 public class ClassDecl extends ASTNode {
     private Id id;
     private Id superClass; // Optional superclass
     private List<VarDecl> varDecls;
     private List<MethodDecl> methodDecls;
-
 
     public ClassDecl(Id id, Id superClass, List<VarDecl> varDecls, List<MethodDecl> methodDecls) {
         this.id = id;
@@ -22,8 +22,10 @@ public class ClassDecl extends ASTNode {
         this.methodDecls = methodDecls;
     }
 
+    public ClassDecl() {}
+
     @Override
-    public <T> T accept(ASTVisitor<T> visitor){
+    public <T> T accept(ASTVisitor<T> visitor) {
         return visitor.visit(this);
     }
 }

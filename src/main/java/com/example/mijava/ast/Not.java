@@ -6,7 +6,7 @@ public class Not extends ASTNode {
     
     private Expression e;
 
-    @Override
+  @Override
 	public <T> T accept(ASTVisitor<T> v) {
 		return v.visit(this);
 	}
