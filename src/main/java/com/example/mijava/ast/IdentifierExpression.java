@@ -3,10 +3,10 @@ package com.example.mijava.ast;
 import com.example.mijava.visitor.ASTVisitor;
 
 public class IdentifierExpression extends Expression{
-  public String s;
+  public Id id;
 
-  public IdentifierExpression(String ie) {
-    this.s = ie;
+  public IdentifierExpression(Id id) {
+    this.id = id;
   }
 
   @Override

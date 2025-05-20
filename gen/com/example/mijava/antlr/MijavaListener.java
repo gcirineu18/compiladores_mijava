@@ -1,4 +1,4 @@
-// Generated from com/example/mijava/antlr/Mijava.g4 by ANTLR 4.13.2
+// Generated from /home/guilherme/Documentos/Documentos_Importantes/UFC/7_semestre/Compiladores/mijava/src/main/java/com/example/mijava/antlr/Mijava.g4 by ANTLR 4.13.2
 package com.example.mijava.antlr;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 

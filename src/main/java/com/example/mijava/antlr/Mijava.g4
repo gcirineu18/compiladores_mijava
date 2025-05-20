@@ -22,7 +22,7 @@ formalRest: COMMA type ID;
 type: INT LBRACK RBRACK # intArrayType
 	| INT 				# integerType
 	| ID 				# identifierType
-	| BOOLEAN;          # booleanType
+	| BOOLEAN           # booleanType;
 
 statement:
 	LBRACE (statement)* RBRACE                             # blockStatement
@@ -30,7 +30,7 @@ statement:
 	| WHILE LPAREN expression RPAREN statement			   # whileStatement 		
 	| SOUT LPAREN expression RPAREN SEMI				   # printStatement
 	| ID ASSIGN expression SEMI                            # assignStatement
-	| ID LBRACK expression RBRACK ASSIGN expression SEMI;  # arrayAssignStatement 
+	| ID LBRACK expression RBRACK ASSIGN expression SEMI   # arrayAssignStatement ;
 
 expression:
 	expression (AND | LT | GT | ADD | SUB | MUL) expression              # binaryExpression
@@ -39,13 +39,13 @@ expression:
 	| expression DOT ID LPAREN (expression (COMMA expression)*)? RPAREN  # methodCallExpression
 	| INTEGER_LITERAL                                                    # intergerLiteralExpression 
 	| TRUE																 # trueExpression	
-	| FALSE																 #  falseExpression
+	| FALSE																 # falseExpression
     | ID 																 # identifierExpression
     | THIS                           									 # thisExpression
 	| NEW INT LBRACK expression RBRACK                                   # newArrayExpression         
 	| NEW ID LPAREN RPAREN												 # newObjectExpression
 	| NOT expression													 # notExpression	
-	| LPAREN expression RPAREN;											 #	innerExpression
+	| LPAREN expression RPAREN											 # innerExpression;
 
 
 LPAREN: '(';
@@ -87,7 +87,6 @@ TRUE: 'true';
 FALSE: 'false';
 THIS: 'this';
 NEW: 'new';
-
 
 ID: [a-zA-Z]+ [a-zA-Z0-9_]*;
 INTEGER_LITERAL: [0-9]+;

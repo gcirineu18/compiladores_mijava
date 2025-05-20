@@ -6,7 +6,9 @@ public class NewObjectExpression extends Expression {
     
     private Id id;
 
-	NewObjectExpression(){};
+	public NewObjectExpression(Id id){
+		this.id = id;
+	};
 	
     @Override
 	public <T> T accept(ASTVisitor<T> v) {
