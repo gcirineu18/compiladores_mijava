@@ -1,9 +1,11 @@
 package com.example.mijava.ast;
 
-public class PrintStatement extends Statement {
+public class AssignStatement extends Statement{
+  public Id id;
   public Expression expression;
 
-  public PrintStatement(Expression exp) {
+  public AssignStatement(Id ai, Expression exp) {
+    this.id = ai;
     this.expression = exp;
   }
 
@@ -12,4 +14,3 @@ public class PrintStatement extends Statement {
     return visitor.visit(this);
   }
 }
-
