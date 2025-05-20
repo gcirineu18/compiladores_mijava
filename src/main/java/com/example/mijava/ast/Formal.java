@@ -1,5 +1,7 @@
 package com.example.mijava.ast;
 
+import com.example.mijava.visitor.ASTVisitor;
+
 public class Formal extends ASTNode {
     private Type type;
     private String name;

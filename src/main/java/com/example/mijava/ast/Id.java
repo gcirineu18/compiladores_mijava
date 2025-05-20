@@ -1,5 +1,7 @@
 package com.example.mijava.ast;
 
+import com.example.mijava.visitor.ASTVisitor;
+
 public class Id extends ASTNode{
 
   private String s;

@@ -1,5 +1,7 @@
 package com.example.mijava.ast;
 
+import com.example.mijava.visitor.ASTVisitor;
+
 public class ArrayLengthExpression extends Expression {
     public Expression array;
 

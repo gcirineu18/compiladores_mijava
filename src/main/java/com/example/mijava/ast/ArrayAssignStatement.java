@@ -1,5 +1,7 @@
 package com.example.mijava.ast;
 
+import com.example.mijava.visitor.ASTVisitor;
+
 public class ArrayAssignStatement extends Statement {
   public Id i;
   public Expression e1, e2;

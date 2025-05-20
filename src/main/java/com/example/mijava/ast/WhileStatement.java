@@ -1,5 +1,7 @@
 package com.example.mijava.ast;
 
+import com.example.mijava.visitor.ASTVisitor;
+
 public class WhileStatement extends Statement {
     private Expression condition;
     private Statement body;

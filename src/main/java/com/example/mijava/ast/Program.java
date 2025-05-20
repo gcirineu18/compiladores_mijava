@@ -2,6 +2,8 @@ package com.example.mijava.ast;
 
 import java.util.List;
 
+import com.example.mijava.visitor.ASTVisitor;
+
 public class Program extends ASTNode {
     private MainClass mainClass;
     private List<ClassDecl> classes;

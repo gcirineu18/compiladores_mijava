@@ -1,5 +1,7 @@
 package com.example.mijava.ast;
 
+import com.example.mijava.visitor.ASTVisitor;
+
 public class VarDecl extends ASTNode {
     private String className;
     private String argsName;
@@ -26,6 +28,6 @@ public class VarDecl extends ASTNode {
 
     @Override
     public <T> T accept(ASTVisitor<T> visitor) {
-        return visitor.visitVarDecl(this); // Certifique-se de que o método visitVarDecl existe no ASTVisitor.
+        return visitor.visit(this); 
     }
 }

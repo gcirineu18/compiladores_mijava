@@ -2,6 +2,8 @@ package com.example.mijava.ast;
 
 import java.util.List;
 
+import com.example.mijava.visitor.ASTVisitor;
+
 public class ClassDecl extends ASTNode {
     private String id;
     private String superClass; // Optional superclass

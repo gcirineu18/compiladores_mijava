@@ -1,5 +1,7 @@
 package com.example.mijava.ast;
 
+import com.example.mijava.visitor.ASTVisitor;
+
 public class IfStatement extends Statement {
     private Expression condition;
     private Statement thenStatement;
