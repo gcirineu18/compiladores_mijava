@@ -2,10 +2,12 @@ package com.example.mijava.ast;
 
 import com.example.mijava.visitor.ASTVisitor;
 
-public class NewObject extends Expression {
+public class NewObjectExpression extends Expression {
     
     private Id id;
 
+	NewObjectExpression(){};
+	
     @Override
 	public <T> T accept(ASTVisitor<T> v) {
 		return v.visit(this);

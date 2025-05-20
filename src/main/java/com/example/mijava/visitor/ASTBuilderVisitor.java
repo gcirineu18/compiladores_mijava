@@ -3,11 +3,10 @@ package com.example.mijava.visitor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.antlr.v4.parse.ANTLRParser.labeledAlt_return;
-
 import com.example.mijava.antlr.MijavaBaseVisitor;
 import com.example.mijava.antlr.MijavaParser;
 import com.example.mijava.ast.*;
+
 
 public class ASTBuilderVisitor extends MijavaBaseVisitor<ASTNode>{
     
@@ -108,11 +107,5 @@ public class ASTBuilderVisitor extends MijavaBaseVisitor<ASTNode>{
         return node; 
     }
 
-    // @Override
-    // public ASTNode visitIntArrayType(MijavaParser.IntArrayType ctx){
-    //     return new Type() {
-    //         labeledAlt_return.
-    //     };
-    // }
 
 }    

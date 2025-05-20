@@ -2,7 +2,8 @@ package com.example.mijava.ast;
 
 import com.example.mijava.visitor.ASTVisitor;
 
-public class NewArray extends Expression {
+public class NotExpression extends ASTNode {
+    
     private Expression e;
 
     @Override

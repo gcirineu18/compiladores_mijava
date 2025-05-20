@@ -19,31 +19,33 @@ methodDecl:
 formalList: type ID (formalRest)* |;
 formalRest: COMMA type ID;
 
-type: INT LBRACK RBRACK | INT | ID | BOOLEAN;
+type: INT LBRACK RBRACK # intArrayType
+	| INT 				# integerType
+	| ID 				# identifierType
+	| BOOLEAN;          # booleanType
 
 statement:
-	LBRACE (statement)* RBRACE
-	| IF LPAREN expression RPAREN statement ELSE statement
-	| WHILE LPAREN expression RPAREN statement
-	| SOUT LPAREN expression RPAREN SEMI
-	| ID ASSIGN expression SEMI
-	| ID LBRACK expression RBRACK ASSIGN expression SEMI;
+	LBRACE (statement)* RBRACE                             # blockStatement
+	| IF LPAREN expression RPAREN statement ELSE statement # ifStatement 
+	| WHILE LPAREN expression RPAREN statement			   # whileStatement 		
+	| SOUT LPAREN expression RPAREN SEMI				   # printStatement
+	| ID ASSIGN expression SEMI                            # assignStatement
+	| ID LBRACK expression RBRACK ASSIGN expression SEMI;  # arrayAssignStatement 
 
 expression:
-	expression (AND | LT | GT | ADD | SUB | MUL) expression
-	| expression LBRACK expression RBRACK
-	| expression DOT LENGTH
-
-	| expression DOT ID LPAREN (expression (COMMA expression)*)? RPAREN
-	| INTEGER_LITERAL
-	| TRUE
-	| FALSE
-	| ID
-	| THIS
-	| NEW INT LBRACK expression RBRACK
-	| NEW ID LPAREN RPAREN
-	| NOT expression
-	| LPAREN expression RPAREN;
+	expression (AND | LT | GT | ADD | SUB | MUL) expression              # binaryExpression
+	| expression LBRACK expression RBRACK                                # arrayAccessExpression
+	| expression DOT LENGTH                                              # arrayLengthExpression 
+	| expression DOT ID LPAREN (expression (COMMA expression)*)? RPAREN  # methodCallExpression
+	| INTEGER_LITERAL                                                    # intergerLiteralExpression 
+	| TRUE																 # trueExpression	
+	| FALSE																 #  falseExpression
+    | ID 																 # identifierExpression
+    | THIS                           									 # thisExpression
+	| NEW INT LBRACK expression RBRACK                                   # newArrayExpression         
+	| NEW ID LPAREN RPAREN												 # newObjectExpression
+	| NOT expression													 # notExpression	
+	| LPAREN expression RPAREN;											 #	innerExpression
 
 
 LPAREN: '(';

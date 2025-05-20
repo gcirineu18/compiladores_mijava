@@ -5,12 +5,12 @@ import java.util.List;
 
 import com.example.mijava.visitor.ASTVisitor;
 
-public class Block extends Statement {
+public class BlockStatement extends Statement {
     
 
     private List<Statement> statements;
 
-    public Block(List<Statement> stst){
+    public BlockStatement(List<Statement> stst){
         this.statements = stst;
     }
 

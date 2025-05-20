@@ -6,10 +6,10 @@ import java.util.List;
 
 public class MethodCallExpression extends Expression {
     public Expression object;
-    public String methodName;
+    public Id methodName;
     public List<Expression> arguments;
 
-    public MethodCallExpression(Expression object, String methodName, List<Expression> arguments) {
+    public MethodCallExpression(Expression object, Id methodName, List<Expression> arguments) {
         this.object = object;
         this.methodName = methodName;
         this.arguments = arguments;

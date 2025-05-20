@@ -12,7 +12,7 @@ public interface ASTVisitor<T> {
     T visit(FormalList formal);
     T visit(FormalRest formal);
     T visit(Type type);
-    T visit(Block statement);
+    T visit(BlockStatement statement);
     T visit(IfStatement statement);
     T visit(WhileStatement statement);
     T visit(PrintStatement statement);
@@ -24,15 +24,17 @@ public interface ASTVisitor<T> {
     T visit(MethodCallExpression expression);
     T visit(IntegerLiteralExpression expression);
     T visit(BooleanLiteralExpression expression);
-    T visit(This expression);
-    T visit(NewArray expression);
-    T visit(NewObject expression);
-    T visit(Not expression);
-    T visit(And expression);
+    T visit(ThisExpression expression);
+    T visit(NewArrayExpression expression);
+    T visit(NewObjectExpression expression);
+    T visit(NotExpression expression);
+    T visit(AndExpression expression);
+    T visit(BooleanType type);
+    
 
     // PENDENTE
-    T visit(True expression);
-	T visit(False expression);
+    T visit(TrueExpression expression);
+	T visit(FalseExpression expression);
     // T visit(Call c); --> temos o methodcall
     T visit(IdentifierExpression expression);
     T visit(IdentifierType type);
