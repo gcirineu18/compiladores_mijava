@@ -1,7 +1,9 @@
 package com.example.mijava.ast;
 
+import com.example.mijava.visitor.ASTVisitor;
+
 public abstract class Type extends ASTNode{
-  public abstract void accept(Visitor v);
-  public abstract Type accept(TypeVisitor v);
+  public abstract <T> T accept(ASTVisitor<T> v);
+ 
   
 }
