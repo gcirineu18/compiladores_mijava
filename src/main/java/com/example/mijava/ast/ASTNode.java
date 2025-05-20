@@ -4,5 +4,9 @@ public abstract class ASTNode {
     
     protected int line;
     protected int column;
-T> visitor);
+
+    @Override
+    public <T> T accept(ASTVisitor<T> visitor) {
+        return visitor.visit(this);
+    }
 }
