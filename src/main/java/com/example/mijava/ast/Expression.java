@@ -1,7 +1,8 @@
 package com.example.mijava.ast;
 
-public abstract class Expression{
-    public abstract void accept(ASTVisitor v);
-    public abstract Type accept(TypeVisitor v);
+import com.example.mijava.visitor.ASTVisitor;
+
+public abstract class Expression {
+    public abstract <T> T accept(ASTVisitor<T> visitor);
 }
 
