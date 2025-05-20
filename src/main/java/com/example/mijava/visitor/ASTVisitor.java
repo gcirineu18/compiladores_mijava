@@ -3,8 +3,8 @@ package com.example.mijava.visitor;
 import com.example.mijava.ast.*;
 
 public interface ASTVisitor<T> {
-    T visit(Program program);
     T visit(MainClass mainClass);
+    T visit(Program program);
     T visit(ClassDecl classDecl);
     T visit(VarDecl varDecl);
     T visit(Id id);
@@ -45,5 +45,6 @@ public interface ASTVisitor<T> {
     T visit(IntArrayType type);
     T visit(LessThan expression);
     T visit(ClassDeclSimple c);
-    // T visit(ClassDeclExtends c);
+    T visit(ClassDeclExtends c);
+
 }
