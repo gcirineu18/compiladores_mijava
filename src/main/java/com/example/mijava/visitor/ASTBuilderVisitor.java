@@ -37,12 +37,12 @@ public class ASTBuilderVisitor extends MijavaBaseVisitor<ASTNode>{
 
         Id id = (Id) visit(ctx.ID(0));
         if(ctx.ID().size() == 1){ 
-            ClassDecl node = new ClassDecl(id, null, varDecl, methodDecl);         
+            ClassDeclSimple node = new ClassDeclSimple(id, varDecl, methodDecl);         
             return node;
         }
         
         Id superclass = (Id) visit(ctx.ID(1));
-        ClassDecl node = new ClassDecl(id, superclass, varDecl, methodDecl);         
+        ClassDeclExtends node = new ClassDeclExtends(id, superclass, varDecl, methodDecl);         
         
         return node;
     }
@@ -106,6 +106,9 @@ public class ASTBuilderVisitor extends MijavaBaseVisitor<ASTNode>{
 
         return node; 
     }
+
+
+    
 
 
 }    

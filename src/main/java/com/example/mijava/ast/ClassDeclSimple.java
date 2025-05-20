@@ -10,7 +10,6 @@ public class ClassDeclSimple extends ClassDecl {
   public List<MethodDecl> methodDeclList;
 
   public ClassDeclSimple(Id a_id, List<VarDecl> a_vdl, List<MethodDecl> a_mdl){
-    super();
     this.id = a_id;
     this.varDeclList = a_vdl;
     this.methodDeclList = a_mdl;
