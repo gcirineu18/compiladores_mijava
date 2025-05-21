@@ -14,6 +14,8 @@ public class ClassDeclSimple extends ClassDecl {
     this.varDeclList = a_vdl;
     this.methodDeclList = a_mdl;
   }
+
+
   
   @Override
   public <T> T accept(ASTVisitor<T> visitor) {

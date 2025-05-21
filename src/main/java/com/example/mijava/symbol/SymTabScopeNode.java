@@ -1,7 +1,12 @@
 package com.example.mijava.symbol;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.HashMap;
 
+@Getter
+@Setter
 public class SymTabScopeNode {
     String Scopename;
     private HashMap<String, SymbolEntry> SymTab;
