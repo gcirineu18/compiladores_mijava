@@ -6,16 +6,16 @@ import com.example.mijava.visitor.ASTVisitor;
 public abstract class Expression extends ASTNode{
 
   protected int line;
-  protected int column; 
+  protected int charpos; 
   protected String name;
   
   public Expression(){
      this.name = "#";
   }
 
-  Expression(int line, int column){
+  Expression(int line, int charpos){
     this.line = line;
-    this.column = column;
+    this.charpos = charpos;
     this.name = "#";
 
   }
@@ -25,7 +25,7 @@ public abstract class Expression extends ASTNode{
   }
 
   public String getTypeErr( int errorNumber, String msg, String require, String get){
-    return "Erro Semântico: Linha " + line + ": " + column + " " + msg +
+    return "Erro Semântico: Linha " + line + ": " + charpos + " " + msg +
             "\n\tR: " +  require + ", G: " + get;
   }
 

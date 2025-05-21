@@ -4,7 +4,8 @@ import com.example.mijava.symbol.SymTabScopeNode;
 import com.example.mijava.visitor.ASTVisitor;
 
 public class ThisExpression extends Expression{
-   ThisExpression(int line, int column){
+   
+   public ThisExpression(int line, int column){
       super(line, column);
   }
 

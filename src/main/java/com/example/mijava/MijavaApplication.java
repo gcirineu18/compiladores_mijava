@@ -17,18 +17,18 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class MijavaApplication {
 
 	public static void main(String[] args) throws IOException {
-        CharStream input = CharStreams.fromFileName("src/main/resources/entrega1_tests/BinaryTree.java");
+        CharStream input = CharStreams.fromFileName("src/main/resources/entrega1_tests/Factorial.java");
 //        CharStream input = CharStreams.fromString("class Test{ public static void main( String[] args){if (true) System.out.println(1); else System.out.println(0);}}");
         MijavaLexer lexer = new MijavaLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         MijavaParser parser = new MijavaParser(tokens);
 
         ParseTree tree = parser.program();
-        System.out.println(tree.toStringTree(parser));
+        //System.out.println(tree.toStringTree(parser));
 
-//        ASTBuilderVisitor ASTvisitor = new ASTBuilderVisitor();
-//        ASTNode root = ASTvisitor.visit(tree.toStringTree(parser));
-//        System.out.println(root);
+       ASTBuilderVisitor ASTvisitor = new ASTBuilderVisitor();
+       ASTNode root = ASTvisitor.visit(tree);
+       System.out.println(root.printNode());
 	   //   SpringApplication.run(MijavaApplication.class, args);
        
 	}

@@ -4,7 +4,8 @@ import com.example.mijava.symbol.SymTabScopeNode;
 import com.example.mijava.visitor.ASTVisitor;
 
 public class TrueExpression extends Expression {
-  TrueExpression(int line, int column){
+  
+  public TrueExpression(int line, int column){
     super(line, column);
 }
 

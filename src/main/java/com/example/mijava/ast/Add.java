@@ -3,24 +3,23 @@ package com.example.mijava.ast;
 import com.example.mijava.symbol.SymTabScopeNode;
 import com.example.mijava.visitor.ASTVisitor;
 
-public class Add extends Expression {
-  public Expression e1, e2;
+public class Add extends BinaryExpression {
+  
 
-  public Add(Expression add_e1, Expression add_e2){
-    this.e1 = add_e1;
-    this.e2 = add_e2;
-  }
+  public Add(int line, int charpos){
+            super(line, charpos);
+        }
 
   @Override
   public void createSymTab(SymTabScopeNode escopoAtual) {
-    e1.createSymTab(escopoAtual);
-    e2.createSymTab(escopoAtual);
+    left.createSymTab(escopoAtual);
+    right.createSymTab(escopoAtual);
   }
 
   @Override
   public String typeCheck(SymTabScopeNode escopoAtual) {
-    String type1 = e1.typeCheck(escopoAtual);
-    String type2 = e2.typeCheck(escopoAtual);
+    String type1 = left.typeCheck(escopoAtual);
+    String type2 = right.typeCheck(escopoAtual);
 
     if (!type1.equals("IntegerType")) {
       throw new RuntimeException("Erro de tipo na expressão Add (+): o primeiro operando deve ser do tipo inteiro, mas foi fornecido " + type1);
@@ -35,7 +34,7 @@ public class Add extends Expression {
 
   @Override
   public String printNode() {
-    return "(" + e1.printNode() + " + " + e2.printNode() + ")";
+    return "(" + left.printNode() + " + " + right.printNode() + ")";
   }
 
   @Override

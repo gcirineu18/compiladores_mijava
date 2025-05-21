@@ -23,6 +23,7 @@ public class FormalList extends ASTNode {
 
     @Override
     public String printNode() {
+      try{
         StringBuilder builder = new StringBuilder("FormalList ( ");
         builder.append(type.printNode()).append(" , ");
         builder.append(identifier.printNode()).append(" , ");
@@ -32,6 +33,11 @@ public class FormalList extends ASTNode {
         }
         builder.append(" )");
         return builder.toString();
+      }  
+      catch(NullPointerException exception){
+        return( "Formal List (NoArgs)");
+      }
+        
     }
 
 

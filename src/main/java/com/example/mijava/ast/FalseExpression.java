@@ -4,7 +4,8 @@ import com.example.mijava.symbol.SymTabScopeNode;
 import com.example.mijava.visitor.ASTVisitor;
 
 public class FalseExpression extends Expression {
-  FalseExpression(int line, int column){
+  
+  public FalseExpression(int line, int column){
     super(line, column);
   }
 

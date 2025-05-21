@@ -3,13 +3,16 @@ package com.example.mijava.ast;
 import com.example.mijava.symbol.SymTabScopeNode;
 import com.example.mijava.visitor.ASTVisitor;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 @AllArgsConstructor
+@Getter @Setter
 public class NotExpression extends Expression {
     
     private Expression e;
 
-		NotExpression(int line, int column){
+	public NotExpression(int line, int column){
 			super(line, column);
 	}
 

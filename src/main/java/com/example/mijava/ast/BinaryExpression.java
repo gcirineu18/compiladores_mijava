@@ -3,58 +3,39 @@ package com.example.mijava.ast;
 import com.example.mijava.symbol.SymTabScopeNode;
 import com.example.mijava.visitor.ASTVisitor;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
 public class BinaryExpression extends Expression {
     public Expression left;
     public Expression right;
     public String operator;
 
-    public BinaryExpression(Expression left, String operator, Expression right) {
-        this.left = left;
-        this.operator = operator;
-        this.right = right;
+    public BinaryExpression(int line, int charpos){
+        super(line, charpos);
     }
 
     @Override
     public void createSymTab(SymTabScopeNode escopoAtual) {
-        left.createSymTab(escopoAtual);
-        right.createSymTab(escopoAtual);
     }
 
     @Override
     public String typeCheck(SymTabScopeNode escopoAtual) {
-        String leftType = left.typeCheck(escopoAtual);
-        String rightType = right.typeCheck(escopoAtual);
-
-        switch (operator) {
-            case "+":
-            case "-":
-            case "*":
-                if (!leftType.equals("IntegerType") || !rightType.equals("IntegerType")) {
-                    throw new RuntimeException("Erro de tipo em expressão binária: operandos devem ser do tipo inteiro para " + operator);
-                }
-                return "IntegerType";
-
-            case "<":
-
-                if (!leftType.equals("IntegerType") || !rightType.equals("IntegerType")) {
-                    throw new RuntimeException("Erro de tipo em expressão binária: operandos devem ser do tipo inteiro para " + operator);
-                }
-                return "BooleanType";
-
-            case "&&":
-                if (!leftType.equals("BooleanType") || !rightType.equals("BooleanType")) {
-                    throw new RuntimeException("Erro de tipo em expressão binária: operandos devem ser do tipo booleano para " + operator);
-                }
-                return "BooleanType";
-
-            default:
-                throw new RuntimeException("Operador binário não reconhecido: " + operator);
-        }
+         if(!left.typeCheck(escopoAtual).equals("IntegerType")){
+                semanticErrorNumber++;
+                semanticErrorMsg.add(left.getTypeErr(semanticErrorNumber, "Type Error in Binary Expression", "IntegerType", left.typeCheck(escopoAtual)));
+            }
+            if(!right.typeCheck(escopoAtual).equals("IntegerType")){
+                semanticErrorNumber++;
+                semanticErrorMsg.add(right.getTypeErr(semanticErrorNumber, "Type Error in Binary Expression", "IntegerType", right.typeCheck(escopoAtual)));
+            }
+            return "IntegerType";
     }
 
     @Override
     public String printNode() {
-        return "(" + left.printNode() + " " + operator + " " + right.printNode() + ")";
+        return "";
     }
 
     @Override
