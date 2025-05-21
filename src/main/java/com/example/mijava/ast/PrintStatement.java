@@ -1,5 +1,6 @@
 package com.example.mijava.ast;
 
+import com.example.mijava.symbol.SymTabScopeNode;
 import com.example.mijava.visitor.ASTVisitor;
 
 public class PrintStatement extends Statement {
@@ -7,6 +8,24 @@ public class PrintStatement extends Statement {
 
   public PrintStatement(Expression exp) {
     this.expression = exp;
+  }
+
+
+  @Override
+  public void createSymTab(SymTabScopeNode escopoAtual) {
+    expression.createSymTab(escopoAtual);
+  }
+
+  @Override
+  public String typeCheck(SymTabScopeNode escopoAtual) {
+    String expressionType = expression.typeCheck(escopoAtual);
+
+    return "void";
+  }
+
+  @Override
+  public String printNode() {
+    return "System.out.println(" + expression.printNode() + ")";
   }
 
   @Override

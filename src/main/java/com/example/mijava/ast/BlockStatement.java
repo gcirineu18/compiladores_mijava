@@ -23,12 +23,6 @@ public class BlockStatement extends Statement {
     }
 
     @Override
-    public <T> T accept(ASTVisitor<T> visitor) {
-        return visitor.visit(this); 
-    }
-
-    // Criação da tabela de símbolos para o bloco
-    @Override
     public void createSymTab(SymTabScopeNode curScope) {
         blockScope = new SymTabScopeNode("#", curScope);
         curScope.next.put("#", blockScope);
@@ -37,7 +31,6 @@ public class BlockStatement extends Statement {
         }
     }
 
-    // Checagem de tipos para o bloco
     @Override
     public String typeCheck(SymTabScopeNode curScope) {
         for (Statement s : statements) {
@@ -45,4 +38,20 @@ public class BlockStatement extends Statement {
         }
         return "null";
     }
+
+    @Override
+    public String printNode() {
+        StringBuilder result = new StringBuilder("{\n");
+        for (Statement s : statements) {
+            result.append("    ").append(s.printNode()).append(";\n");
+        }
+        result.append("}");
+        return result.toString();
+    }
+
+    @Override
+    public <T> T accept(ASTVisitor<T> visitor) {
+        return visitor.visit(this);
+    }
+
 }
