@@ -1,17 +1,58 @@
 package com.example.mijava.ast;
 
+import com.example.mijava.symbol.SymTabScopeNode;
+import com.example.mijava.symbol.SymbolEntry;
 import com.example.mijava.visitor.ASTVisitor;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter @Setter
 public class Id extends Expression{
 
   private String s;
-  private int line, column;
+  private int line;
+  private int column;
   
   public Id(String str, int line, int column){
     this.s  = str;
     this.line = line;
-    this.column = column
+    this.column = column;
   }
+    public String Getsemanticerr(int errornum, String msg){
+        return "Erro Semântico, Linha: " + line + ": "+ column +" "+ msg + ":" + s;
+    }
+
+    public String GetTypeErr(int errornum, String msg, String require, String get){
+        return "Erro Semântico, Linha: "+ line + ": " + column +" " + msg + ":" + s +
+                "\n\tRequire: " + require + ", Get: "+ get + "\n";
+    }
+
+    @Override
+    public String printNode() {
+        return "Identifier:"+s;
+    }
+
+    @Override
+    public void createSymTab(SymTabScopeNode curScope) {}
+
+    @Override
+    public String typeCheck(SymTabScopeNode curScope){
+        SymbolEntry entry;
+        while(curScope != null){
+            if((entry = curScope.getSymTab(s)) != null){
+                if(entry.getType().equals("IdentifierType") && !entry.getKind().equals("arg"))
+                    return entry.getKind();
+                else
+                    return entry.getType();
+            }
+            else{
+                curScope = curScope.parent;
+            }
+        }
+        semanticErrorNumber ++;
+        semanticErrorMsg.add(Getsemanticerr(semanticErrorNumber, "Undefined Identifier"));
+        return "null";
+    }
 
   @Override
   public <T> T accept(ASTVisitor<T> visitor) {

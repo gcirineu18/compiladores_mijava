@@ -5,6 +5,8 @@ import java.io.IOException;
 
 import com.example.mijava.antlr.MijavaLexer;
 import com.example.mijava.antlr.MijavaParser;
+import com.example.mijava.ast.ASTNode;
+import com.example.mijava.visitor.ASTBuilderVisitor;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -23,6 +25,10 @@ public class MijavaApplication {
 
         ParseTree tree = parser.program();
         System.out.println(tree.toStringTree(parser));
+
+//        ASTBuilderVisitor ASTvisitor = new ASTBuilderVisitor();
+//        ASTNode root = ASTvisitor.visit(tree.toStringTree(parser));
+//        System.out.println(root);
 	   //   SpringApplication.run(MijavaApplication.class, args);
        
 	}

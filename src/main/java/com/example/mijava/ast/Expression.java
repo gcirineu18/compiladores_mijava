@@ -1,5 +1,6 @@
 package com.example.mijava.ast;
 
+import com.example.mijava.symbol.SymTabScopeNode;
 import com.example.mijava.visitor.ASTVisitor;
 
 public abstract class Expression extends ASTNode{
@@ -8,13 +9,11 @@ public abstract class Expression extends ASTNode{
   protected int column; 
   protected String name;
   
-  ExpressionNode(){
-
+  public Expression(){
      this.name = "#";
   }
 
-  ExpressionNode(int line, int column){
-
+  Expression(int line, int column){
     this.line = line;
     this.column = column;
     this.name = "#";
