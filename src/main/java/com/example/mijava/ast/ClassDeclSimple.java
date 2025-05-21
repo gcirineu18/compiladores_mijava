@@ -15,6 +15,9 @@ public class ClassDeclSimple extends ClassDecl {
     this.methodDeclList = a_mdl;
   }
 
+  @Override
+  public String printNode()
+
 
   
   @Override
