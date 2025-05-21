@@ -81,11 +81,6 @@ public class ASTBuilderVisitor extends MijavaBaseVisitor<ASTNode>{
     @Override
     public ASTNode visitFormalList(MijavaParser.FormalListContext ctx){
 
-        System.out.println(
-    (ctx.ID() != null ? ctx.type().getText() : "left=null") + " " +
-    (ctx.type() != null ? ctx.type().getText() : "right=null") + " "  +
-    (ctx.getStart().getLine()));
-
         if (ctx.ID() == null  || ctx.type() == null)  {
         // Não há parâmetros formais
         return new FormalList(null, null, new ArrayList<>());
