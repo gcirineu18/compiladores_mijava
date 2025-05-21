@@ -12,11 +12,6 @@ public class Mul extends Expression {
   }
 
   @Override
-  public String printNode() {
-    return "(" + e1.printNode() + " * " + e2.printNode() + ")";
-  }
-
-  @Override
   public void createSymTab(SymTabScopeNode escopoAtual) {
     e1.createSymTab(escopoAtual);
     e2.createSymTab(escopoAtual);
@@ -36,6 +31,11 @@ public class Mul extends Expression {
     }
 
     return "IntegerType";
+  }
+
+  @Override
+  public String printNode() {
+    return "(" + e1.printNode() + " * " + e2.printNode() + ")";
   }
   
   @Override

@@ -10,10 +10,6 @@ public class PrintStatement extends Statement {
     this.expression = exp;
   }
 
-  @Override
-  public String printNode() {
-    return "System.out.println(" + expression.printNode() + ")";
-  }
 
   @Override
   public void createSymTab(SymTabScopeNode escopoAtual) {
@@ -25,6 +21,11 @@ public class PrintStatement extends Statement {
     String expressionType = expression.typeCheck(escopoAtual);
 
     return "void";
+  }
+
+  @Override
+  public String printNode() {
+    return "System.out.println(" + expression.printNode() + ")";
   }
 
   @Override

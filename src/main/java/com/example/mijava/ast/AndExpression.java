@@ -12,11 +12,6 @@ public class AndExpression extends Expression {
    }
 
    @Override
-   public String printNode() {
-      return "(" + e1.printNode() + " && " + e2.printNode() + ")";
-   }
-
-   @Override
    public void createSymTab(SymTabScopeNode escopoAtual) {
       e1.createSymTab(escopoAtual);
       e2.createSymTab(escopoAtual);
@@ -36,6 +31,11 @@ public class AndExpression extends Expression {
       }
 
       return "BooleanType";
+   }
+
+   @Override
+   public String printNode() {
+      return "(" + e1.printNode() + " && " + e2.printNode() + ")";
    }
 
    @Override

@@ -15,11 +15,6 @@ public class BinaryExpression extends Expression {
     }
 
     @Override
-    public String printNode() {
-        return "(" + left.printNode() + " " + operator + " " + right.printNode() + ")";
-    }
-
-    @Override
     public void createSymTab(SymTabScopeNode escopoAtual) {
         left.createSymTab(escopoAtual);
         right.createSymTab(escopoAtual);
@@ -47,7 +42,6 @@ public class BinaryExpression extends Expression {
                 return "BooleanType";
 
             case "&&":
-                // Verifica se ambos os operandos são booleanos
                 if (!leftType.equals("BooleanType") || !rightType.equals("BooleanType")) {
                     throw new RuntimeException("Erro de tipo em expressão binária: operandos devem ser do tipo booleano para " + operator);
                 }
@@ -56,6 +50,11 @@ public class BinaryExpression extends Expression {
             default:
                 throw new RuntimeException("Operador binário não reconhecido: " + operator);
         }
+    }
+
+    @Override
+    public String printNode() {
+        return "(" + left.printNode() + " " + operator + " " + right.printNode() + ")";
     }
 
     @Override

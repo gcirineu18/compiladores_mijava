@@ -26,18 +26,6 @@ public class IfStatement extends Statement {
         return elseStatement;
     }
 
-    @Override
-    public String printNode() {
-        StringBuilder result = new StringBuilder();
-        result.append("if (").append(condition.printNode()).append(") ");
-        result.append(thenStatement.printNode());
-
-        if (elseStatement != null) {
-            result.append(" else ").append(elseStatement.printNode());
-        }
-
-        return result.toString();
-    }
 
     @Override
     public void createSymTab(SymTabScopeNode escopoAtual) {
@@ -63,6 +51,19 @@ public class IfStatement extends Statement {
         }
 
         return "void";
+    }
+
+    @Override
+    public String printNode() {
+        StringBuilder result = new StringBuilder();
+        result.append("if (").append(condition.printNode()).append(") ");
+        result.append(thenStatement.printNode());
+
+        if (elseStatement != null) {
+            result.append(" else ").append(elseStatement.printNode());
+        }
+
+        return result.toString();
     }
 
     @Override

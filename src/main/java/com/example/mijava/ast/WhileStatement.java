@@ -21,11 +21,6 @@ public class WhileStatement extends Statement {
     }
 
     @Override
-    public String printNode() {
-        return "while (" + condition.printNode() + ") " + body.printNode();
-    }
-
-    @Override
     public void createSymTab(SymTabScopeNode escopoAtual) {
         condition.createSymTab(escopoAtual);
         body.createSymTab(escopoAtual);
@@ -41,6 +36,11 @@ public class WhileStatement extends Statement {
         body.typeCheck(escopoAtual);
 
         return "void";
+    }
+
+    @Override
+    public String printNode() {
+        return "while (" + condition.printNode() + ") " + body.printNode();
     }
 
     @Override

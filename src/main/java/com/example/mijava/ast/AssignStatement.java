@@ -13,11 +13,6 @@ public class AssignStatement extends Statement{
   }
 
   @Override
-  public String printNode() {
-    return id.printNode() + " = " + expression.printNode() + ";";
-  }
-
-  @Override
   public void createSymTab(SymTabScopeNode escopoAtual) {
     id.createSymTab(escopoAtual);
     expression.createSymTab(escopoAtual);
@@ -33,6 +28,11 @@ public class AssignStatement extends Statement{
     }
 
     return "void";
+  }
+
+  @Override
+  public String printNode() {
+    return id.printNode() + " = " + expression.printNode() + ";";
   }
 
   @Override

@@ -11,11 +11,6 @@ public class ArrayLengthExpression extends Expression {
     }
 
     @Override
-    public String printNode() {
-        return array.printNode() + ".length";
-    }
-
-    @Override
     public void createSymTab(SymTabScopeNode escopoAtual) {
         array.createSymTab(escopoAtual);
     }
@@ -29,6 +24,11 @@ public class ArrayLengthExpression extends Expression {
         }
 
         return "IntegerType";
+    }
+
+    @Override
+    public String printNode() {
+        return array.printNode() + ".length";
     }
 
     @Override

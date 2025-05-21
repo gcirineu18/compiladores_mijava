@@ -14,11 +14,6 @@ public class ArrayAssignStatement extends Statement {
   }
 
   @Override
-  public String printNode() {
-    return i.printNode() + "[" + e1.printNode() + "] = " + e2.printNode() + ";";
-  }
-
-  @Override
   public void createSymTab(SymTabScopeNode escopoAtual) {
     i.createSymTab(escopoAtual);
     e1.createSymTab(escopoAtual);
@@ -44,6 +39,11 @@ public class ArrayAssignStatement extends Statement {
     }
 
     return "void";
+  }
+
+  @Override
+  public String printNode() {
+    return i.printNode() + "[" + e1.printNode() + "] = " + e2.printNode() + ";";
   }
 
   @Override
