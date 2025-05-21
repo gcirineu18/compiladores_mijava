@@ -3,7 +3,9 @@ package com.example.mijava.symbol;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @Getter
 @Setter
@@ -45,6 +47,63 @@ public class SymTabScopeNode {
         for(String key : SymTab.keySet()){
             System.out.println(key + "\t" + "kind:" + SymTab.get(key).getKind() + "\ttype:" + SymTab.get(key).getType() + "\tpos:" + SymTab.get(key).getPos());
         }
+    }
+
+    public boolean isClassScope() {
+        // Um escopo é de classe se estiver diretamente sob o escopo global
+        // e não for um método
+        return parent != null && parent.parent == null && !Scopename.startsWith("Method_");
+    }
+
+    public boolean containsClass(String nomeClasse) {
+        return next != null && next.containsKey(nomeClasse);
+    }
+
+    public SymTabScopeNode getClassScope(String nomeClasse) {
+        if (next != null && next.containsKey(nomeClasse)) {
+            return next.get(nomeClasse);
+        }
+        return null;
+    }
+
+    public boolean containsMethod(String nomeMetodo) {
+        return getSymTab().containsKey(nomeMetodo) &&
+                getSymTab(nomeMetodo).getKind().equals("func");
+    }
+
+    public String getMethodReturnType(String nomeMetodo) {
+        if (containsMethod(nomeMetodo)) {
+            return getSymTab(nomeMetodo).getType();
+        }
+        return "null";
+    }
+
+    public SymTabScopeNode getMethodScope(String nomeMetodo) {
+        if (next != null && next.containsKey(nomeMetodo)) {
+            return next.get(nomeMetodo);
+        }
+        return null;
+    }
+
+    public List<String> getParameterTypes() {
+        List<String> tiposParametros = new ArrayList<>();
+        HashMap<String, SymbolEntry> fSymTab = getSymTab();
+
+        String[] paraTypes = new String[fSymTab.size()];
+        int numParams = 0;
+
+        for (SymbolEntry value : fSymTab.values()) {
+            if (value.getKind().equals("arg")) {
+                paraTypes[value.getPos()] = value.getType();
+                numParams++;
+            }
+        }
+
+        for (int i = 0; i < numParams; i++) {
+            tiposParametros.add(paraTypes[i]);
+        }
+
+        return tiposParametros;
     }
 
 }
