@@ -10,6 +10,8 @@ public class Add extends Expression {
     this.e2 = add_e2;
   }
 
+  @O
+
   @Override
     public <T> T accept(ASTVisitor<T> visitor) {
         return visitor.visit(this);
