@@ -12,18 +12,24 @@ public class ArrayLengthExpression extends Expression {
 
     @Override
     public void createSymTab(SymTabScopeNode escopoAtual) {
-        array.createSymTab(escopoAtual);
     }
 
     @Override
     public String typeCheck(SymTabScopeNode escopoAtual) {
-        String arrayType = array.typeCheck(escopoAtual);
+         String clsname;
+            if(array.printNode().equals("This")){
+                return "IntegerType";
+            }
+            else {
+                clsname = array.typeCheck(escopoAtual);
+                if(!mainScope.next.containsKey(clsname) && !clsname.equals("IntArrayType")){
+                    semanticErrorNumber++;
+                    semanticErrorMsg.add(array.getTypeErr(semanticErrorNumber, "Type Error in ArrayLength Expression",
+                     clsname, "Not exist class name"));
+                }
+            }
 
-        if (!arrayType.equals("IntArrayType")) {
-            throw new RuntimeException("Erro de tipo na expressão ArrayLength: a expressão deve ser do tipo array, mas foi fornecido " + arrayType);
-        }
-
-        return "IntegerType";
+            return "IntegerType";
     }
 
     @Override

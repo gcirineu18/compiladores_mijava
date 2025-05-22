@@ -18,11 +18,11 @@ public class Id extends Expression{
     this.line = line;
     this.column = column;
   }
-    public String Getsemanticerr(int errornum, String msg){
+    public String getsemanticerr(int errornum, String msg){
         return "Erro Semântico, Linha: " + line + ": "+ column +" "+ msg + ":" + s;
     }
 
-    public String GetTypeErr(int errornum, String msg, String require, String get){
+    public String getTypeErr(int errornum, String msg, String require, String get){
         return "Erro Semântico, Linha: "+ line + ": " + column +" " + msg + ":" + s +
                 "\n\tRequire: " + require + ", Get: "+ get + "\n";
     }
@@ -38,9 +38,13 @@ public class Id extends Expression{
     @Override
     public String typeCheck(SymTabScopeNode curScope){
         SymbolEntry entry;
-        while(curScope != null){
+        
+        while(curScope != null){   
+               
             if((entry = curScope.getSymTab(s)) != null){
-                if(entry.getType().equals("IdentifierType") && !entry.getKind().equals("arg"))
+
+                if( entry.getType().equals("IdentifierType") && !entry.getKind().equals("arg"))
+                
                     return entry.getKind();
                 else
                     return entry.getType();
@@ -50,7 +54,7 @@ public class Id extends Expression{
             }
         }
         semanticErrorNumber ++;
-        semanticErrorMsg.add(Getsemanticerr(semanticErrorNumber, "Undefined Identifier"));
+        semanticErrorMsg.add(getsemanticerr(semanticErrorNumber, "Undefined Identifier"));
         return "null";
     }
 

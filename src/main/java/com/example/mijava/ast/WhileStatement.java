@@ -22,20 +22,18 @@ public class WhileStatement extends Statement {
 
     @Override
     public void createSymTab(SymTabScopeNode escopoAtual) {
-        condition.createSymTab(escopoAtual);
         body.createSymTab(escopoAtual);
     }
 
     @Override
     public String typeCheck(SymTabScopeNode escopoAtual) {
-        String conditionType = condition.typeCheck(escopoAtual);
-        if (!conditionType.equals("boolean")) {
-            throw new RuntimeException("Erro: A condição do while deve ser do tipo boolean, mas é " + conditionType);
+        if (!condition.typeCheck(escopoAtual).equals("BooleanType")){
+            semanticErrorNumber++;
+            semanticErrorMsg.add(condition.getTypeErr(semanticErrorNumber, "Type error in While Statement", 
+            "BooleanType", condition.typeCheck(escopoAtual)));
         }
-
         body.typeCheck(escopoAtual);
-
-        return "void";
+        return "null";
     }
 
     @Override

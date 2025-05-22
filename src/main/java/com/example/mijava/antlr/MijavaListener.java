@@ -68,16 +68,6 @@ public interface MijavaListener extends ParseTreeListener {
 	 */
 	void exitFormalList(MijavaParser.FormalListContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MijavaParser#formalRest}.
-	 * @param ctx the parse tree
-	 */
-	void enterFormalRest(MijavaParser.FormalRestContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MijavaParser#formalRest}.
-	 * @param ctx the parse tree
-	 */
-	void exitFormalRest(MijavaParser.FormalRestContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code intArrayType}
 	 * labeled alternative in {@link MijavaParser#type}.
 	 * @param ctx the parse tree
@@ -353,4 +343,14 @@ public interface MijavaListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitInnerExpression(MijavaParser.InnerExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MijavaParser#identifier}.
+	 * @param ctx the parse tree
+	 */
+	void enterIdentifier(MijavaParser.IdentifierContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MijavaParser#identifier}.
+	 * @param ctx the parse tree
+	 */
+	void exitIdentifier(MijavaParser.IdentifierContext ctx);
 }

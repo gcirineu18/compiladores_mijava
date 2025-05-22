@@ -13,14 +13,17 @@ public class PrintStatement extends Statement {
 
   @Override
   public void createSymTab(SymTabScopeNode escopoAtual) {
-    expression.createSymTab(escopoAtual);
+    
   }
 
   @Override
   public String typeCheck(SymTabScopeNode escopoAtual) {
-    String expressionType = expression.typeCheck(escopoAtual);
-
-    return "void";
+    if(!expression.typeCheck(escopoAtual).equals("IntegerType")){
+          semanticErrorNumber++;
+          semanticErrorMsg.add(expression.getTypeErr(semanticErrorNumber, 
+          "Type Error in Print statement", "IntegerType", expression.typeCheck(escopoAtual)));
+      };
+      return "null";
   }
 
   @Override

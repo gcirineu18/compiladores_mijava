@@ -14,8 +14,6 @@ public class AssignStatement extends Statement{
 
   @Override
   public void createSymTab(SymTabScopeNode escopoAtual) {
-    id.createSymTab(escopoAtual);
-    expression.createSymTab(escopoAtual);
   }
 
   @Override
@@ -23,11 +21,13 @@ public class AssignStatement extends Statement{
     String idType = id.typeCheck(escopoAtual);
     String expressionType = expression.typeCheck(escopoAtual);
 
-    if (!idType.equals(expressionType)) {
-      throw new RuntimeException("Erro de tipo na atribuição: esperado " + idType + ", mas foi fornecido " + expressionType);
-    }
+    if (!expressionType.equals(idType)) {
+      semanticErrorNumber++;
 
-    return "void";
+      semanticErrorMsg.add(expression.getTypeErr(semanticErrorNumber, "Type error in Assign Statement",
+       id.typeCheck(escopoAtual), expression.typeCheck(escopoAtual)));
+    }
+    return "null";
   }
 
   @Override

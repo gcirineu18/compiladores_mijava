@@ -25,7 +25,7 @@ public class NewObjectExpression extends Expression {
 		public String typeCheck(SymTabScopeNode curScope) {
 				if(!mainScope.next.containsKey(id.getS())){
 					semanticErrorNumber++;
-					semanticErrorMsg.add(id.GetTypeErr(semanticErrorNumber, "Type Error in New Object Expression", id.getS(), "Not exist class name"));
+					semanticErrorMsg.add(id.getTypeErr(semanticErrorNumber, "Type Error in New Object Expression", id.getS(), "Not exist class name"));
 				}
 				return id.getS();
 		}

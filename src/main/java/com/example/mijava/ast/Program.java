@@ -1,5 +1,6 @@
 package com.example.mijava.ast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.example.mijava.symbol.SymTabScopeNode;
@@ -24,7 +25,7 @@ public class Program extends ASTNode {
     @Override
     public String printNode(){
         StringBuilder builder  = new StringBuilder("Program ( ");
-        builder.append(mainClass.toString());
+        builder.append(mainClass.printNode()).append(" , ");
         for (ClassDecl classDecl : classes) {
             builder.append(classDecl.printNode()).append(" , ");
         }
@@ -35,21 +36,22 @@ public class Program extends ASTNode {
 
     @Override
     public void createSymTab(SymTabScopeNode curScope) {
-        mainClass.createSymTab(curScope);
+        mainScope = new SymTabScopeNode("mainScope", curScope);
+        semanticErrorMsg = new ArrayList<>();
+
+        mainClass.createSymTab(mainScope);
         for (ClassDecl classDecl : classes) {
-            classDecl.createSymTab(curScope);
+            classDecl.createSymTab(mainScope);
         }
     }
 
-
-
     @Override
     public String typeCheck(SymTabScopeNode escopoAtual) {
-        mainClass.typeCheck(mainScope.next.get(mainClass.getClassName().getS()));
+        mainClass.typeCheck(mainScope.next.get(mainClass.getClassName().getS()));      
         for (ClassDecl classDecl : classes) {
             classDecl.typeCheck(mainScope.next.get(classDecl.getId().getS()));
         }
-        return  null;
+        return  "null";
     }
 
 

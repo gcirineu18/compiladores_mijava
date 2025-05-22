@@ -213,4 +213,10 @@ public interface MijavaVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitInnerExpression(MijavaParser.InnerExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MijavaParser#identifier}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIdentifier(MijavaParser.IdentifierContext ctx);
 }

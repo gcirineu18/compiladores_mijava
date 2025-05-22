@@ -29,7 +29,7 @@ public class MainClass extends ASTNode {
             SymbolEntry clsentry = new SymbolEntry("class", "class");
             if(!curScope.insertSym(className.getS(), clsentry)){
                 semanticErrorNumber ++;
-                semanticErrorMsg.add(className.Getsemanticerr(semanticErrorNumber, "Duplicate class definition"));
+                semanticErrorMsg.add(className.getsemanticerr(semanticErrorNumber, "Duplicate class definition"));
             }
 
             clsScope = new SymTabScopeNode(className.getS(), curScope);
@@ -43,7 +43,7 @@ public class MainClass extends ASTNode {
             SymbolEntry argentry = new SymbolEntry("arg", "String[]");
             if(!fScope.insertSym(argsName.getS(), argentry)){
                 semanticErrorNumber ++;
-                semanticErrorMsg.add(argsName.Getsemanticerr(semanticErrorNumber, "Duplicate arg definition"));
+                semanticErrorMsg.add(argsName.getsemanticerr(semanticErrorNumber, "Duplicate arg definition"));
             }
 
             statement.createSymTab(fScope);

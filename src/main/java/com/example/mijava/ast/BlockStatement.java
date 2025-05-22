@@ -41,12 +41,14 @@ public class BlockStatement extends Statement {
 
     @Override
     public String printNode() {
-        StringBuilder result = new StringBuilder("{\n");
-        for (Statement s : statements) {
-            result.append("    ").append(s.printNode()).append(";\n");
-        }
-        result.append("}");
-        return result.toString();
+         String ret = "Block ( ";
+            StringBuilder builder = new StringBuilder(ret);
+            for(Statement s : statements) {
+                builder.append(s.printNode()).append(" , ");
+            }
+            builder.delete(builder.length()-3, builder.length());
+            builder.append(" ) ");
+            return builder.toString();
     }
 
     @Override

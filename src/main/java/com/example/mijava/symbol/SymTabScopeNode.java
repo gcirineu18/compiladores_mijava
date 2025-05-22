@@ -50,8 +50,6 @@ public class SymTabScopeNode {
     }
 
     public boolean isClassScope() {
-        // Um escopo é de classe se estiver diretamente sob o escopo global
-        // e não for um método
         return parent != null && parent.parent == null && !Scopename.startsWith("Method_");
     }
 
@@ -65,6 +63,8 @@ public class SymTabScopeNode {
         }
         return null;
     }
+
+    
 
     public boolean containsMethod(String nomeMetodo) {
         return getSymTab().containsKey(nomeMetodo) &&

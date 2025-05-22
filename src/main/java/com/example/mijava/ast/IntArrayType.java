@@ -8,6 +8,9 @@ public class IntArrayType extends Type {
     public <T> T accept(ASTVisitor<T> visitor) {
         return visitor.visit(this);
     }
+    public IntArrayType(){
+      this.name = "IntArrayType";
+    }
 
     @Override
     public void createSymTab(SymTabScopeNode escopoatual) {
@@ -15,11 +18,11 @@ public class IntArrayType extends Type {
 
     @Override
     public String typeCheck(SymTabScopeNode escopoAtual) {
-        return "";
+        return printNode();
     }
 
     @Override
     public String printNode() {
-        return "int[]";
+        return "IntArrayType";
     }
 }

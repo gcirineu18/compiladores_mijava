@@ -4,10 +4,11 @@ import com.example.mijava.symbol.SymTabScopeNode;
 import com.example.mijava.visitor.ASTVisitor;
 
 public class IdentifierType extends Type {
-  public Id identifier;
+  public String identifier;
 
-  public IdentifierType(Id identifier){
+  public IdentifierType(String identifier){
     this.identifier = identifier;
+    this.name = identifier;
   }
 
   @Override
@@ -16,12 +17,12 @@ public class IdentifierType extends Type {
 
   @Override
   public String typeCheck(SymTabScopeNode curScope) {
-    return identifier.getS();
+    return printNode();
   }
 
   @Override
   public String printNode() {
-    return identifier.getS();
+    return "IdentifierType"; 
   }
 
   @Override

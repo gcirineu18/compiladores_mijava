@@ -26,13 +26,13 @@ public abstract class Expression extends ASTNode{
 
   public String getTypeErr( int errorNumber, String msg, String require, String get){
     return "Erro Semântico: Linha " + line + ": " + charpos + " " + msg +
-            "\n\tR: " +  require + ", G: " + get;
+            "\n\tRequire: " +  require + ", Get: " + get;
   }
 
   public void createSymTab(SymTabScopeNode escopoAtual){}
 
   public String typeCheck(SymTabScopeNode escopoAtual){           
-      return "";
+      return "Unknow Type";
   }
 
   public abstract <T> T accept(ASTVisitor<T> v); 

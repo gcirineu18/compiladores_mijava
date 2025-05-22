@@ -4,7 +4,7 @@ import com.example.mijava.symbol.SymTabScopeNode;
 import com.example.mijava.visitor.ASTVisitor;
 
 public class AndExpression extends BinaryExpression {
-   public Expression e1, e2;
+   
 
     public AndExpression(int line, int charpos){
             super(line, charpos);
@@ -12,21 +12,21 @@ public class AndExpression extends BinaryExpression {
 
    @Override
    public void createSymTab(SymTabScopeNode escopoAtual) {
-      e1.createSymTab(escopoAtual);
-      e2.createSymTab(escopoAtual);
    }
 
    @Override
    public String typeCheck(SymTabScopeNode escopoAtual) {
-      String type1 = e1.typeCheck(escopoAtual);
-      String type2 = e2.typeCheck(escopoAtual);
+      String type1 = left.typeCheck(escopoAtual);
+      String type2 = right.typeCheck(escopoAtual);
 
       if (!type1.equals("BooleanType")) {
-         throw new RuntimeException("Erro de tipo na expressão AND: o primeiro operando deve ser do tipo booleano, mas foi fornecido " + type1);
+          semanticErrorNumber++;
+          semanticErrorMsg.add(left.getTypeErr(semanticErrorNumber, "Type Error in Binary Expression", "IntegerType", left.typeCheck(escopoAtual)));
       }
 
       if (!type2.equals("BooleanType")) {
-         throw new RuntimeException("Erro de tipo na expressão AND: o segundo operando deve ser do tipo booleano, mas foi fornecido " + type2);
+         semanticErrorNumber++;
+         semanticErrorMsg.add(right.getTypeErr(semanticErrorNumber, "Type Error in Binary Expression", "IntegerType", right.typeCheck(escopoAtual)));
       }
 
       return "BooleanType";
@@ -34,7 +34,7 @@ public class AndExpression extends BinaryExpression {
 
    @Override
    public String printNode() {
-      return "(" + e1.printNode() + " && " + e2.printNode() + ")";
+      return "(" + left.printNode() + " && " + right.printNode() + ")";
    }
 
    @Override

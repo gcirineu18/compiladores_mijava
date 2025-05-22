@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public abstract class ClassDecl extends ASTNode {
-    private Id id;
+    protected Id id;
 
     @Override
     public <T> T accept(ASTVisitor<T> visitor) {

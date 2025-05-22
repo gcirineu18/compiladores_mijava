@@ -1,6 +1,7 @@
 class BinarySearch{
     public static void main(String[] a){
 	System.out.println(new BS().Start(20));
+
     }
 }
 // This class contains an array of integers and
@@ -50,12 +51,13 @@ class BS{
 	int aux01 ;
 	int nt ;
 
-	aux01 = 0 ;
+	aux01 = true ;
 	bs01 = false ;
 	right = number.length ;
 	right = right - 1 ;
 	left = 0 ;
 	var_cont = true ;
+	
 	while (var_cont){
 	    medium = left + right ;
 	    medium = this.Div(medium);

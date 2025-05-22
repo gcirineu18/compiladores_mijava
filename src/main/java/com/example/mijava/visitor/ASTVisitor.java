@@ -10,7 +10,6 @@ public interface ASTVisitor<T> {
     T visit(Id id);
     T visit(MethodDecl methodDecl);
     T visit(FormalList formal);
-    T visit(FormalRest formal);
     T visit(Type type);
     T visit(BlockStatement statement);
     T visit(IfStatement statement);

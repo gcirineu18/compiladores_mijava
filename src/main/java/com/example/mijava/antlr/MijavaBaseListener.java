@@ -89,18 +89,6 @@ public class MijavaBaseListener implements MijavaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFormalRest(MijavaParser.FormalRestContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitFormalRest(MijavaParser.FormalRestContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterIntArrayType(MijavaParser.IntArrayTypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -372,6 +360,18 @@ public class MijavaBaseListener implements MijavaListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitInnerExpression(MijavaParser.InnerExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIdentifier(MijavaParser.IdentifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIdentifier(MijavaParser.IdentifierContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

@@ -29,7 +29,7 @@ public class VarDecl extends ASTNode {
         varentry = new SymbolEntry("var", type.name);
         if(!curScope.insertSym(identifier.getS(), varentry)){
             semanticErrorNumber ++;
-            semanticErrorMsg.add(identifier.Getsemanticerr(semanticErrorNumber, "Duplicate var definition"));
+            semanticErrorMsg.add(identifier.getsemanticerr(semanticErrorNumber, "Duplicate var definition"));
         }
     }
 
@@ -37,7 +37,7 @@ public class VarDecl extends ASTNode {
     public String typeCheck(SymTabScopeNode curScope) {
         if (!identifier.typeCheck(curScope).equals(type.name)) {
             semanticErrorNumber++;
-            semanticErrorMsg.add(identifier.GetTypeErr(semanticErrorNumber, "Type Error", type.name, identifier.typeCheck(curScope)));
+            semanticErrorMsg.add(identifier.getTypeErr(semanticErrorNumber, "Type Error", type.name, identifier.typeCheck(curScope)));
         }
         return "null";
     }

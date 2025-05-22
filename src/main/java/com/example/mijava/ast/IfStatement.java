@@ -29,41 +29,30 @@ public class IfStatement extends Statement {
 
     @Override
     public void createSymTab(SymTabScopeNode escopoAtual) {
-        condition.createSymTab(escopoAtual);
         thenStatement.createSymTab(escopoAtual);
-
-        if (elseStatement != null) {
-            elseStatement.createSymTab(escopoAtual);
-        }
+        elseStatement.createSymTab(escopoAtual);
+        
     }
 
     @Override
     public String typeCheck(SymTabScopeNode escopoAtual) {
         String conditionType = condition.typeCheck(escopoAtual);
-        if (!conditionType.equals("boolean")) {
-            throw new RuntimeException("Erro: A condição do if deve ser do tipo boolean, mas é " + conditionType);
+
+        if (!conditionType.equals("BooleanType")) {
+            semanticErrorNumber++;
+            semanticErrorMsg.add(condition.getTypeErr(semanticErrorNumber, "Type error in If Statement", 
+            "BooleanType", condition.typeCheck(escopoAtual)));
         }
 
         thenStatement.typeCheck(escopoAtual);
-
-        if (elseStatement != null) {
-            elseStatement.typeCheck(escopoAtual);
-        }
-
-        return "void";
+        elseStatement.typeCheck(escopoAtual);
+    
+        return "null";
     }
 
     @Override
     public String printNode() {
-        StringBuilder result = new StringBuilder();
-        result.append("if (").append(condition.printNode()).append(") ");
-        result.append(thenStatement.printNode());
-
-        if (elseStatement != null) {
-            result.append(" else ").append(elseStatement.printNode());
-        }
-
-        return result.toString();
+        return "If ( " + condition.printNode() + " , " + thenStatement.printNode() + " , " + elseStatement.printNode() + " ) ";
     }
 
     @Override

@@ -12,8 +12,6 @@ public class Sub extends BinaryExpression{
 
   @Override
   public void createSymTab(SymTabScopeNode escopoAtual) {
-    left.createSymTab(escopoAtual);
-    right.createSymTab(escopoAtual);
   }
 
   @Override
@@ -22,11 +20,13 @@ public class Sub extends BinaryExpression{
     String type2 = right.typeCheck(escopoAtual);
 
     if (!type1.equals("IntegerType")) {
-      throw new RuntimeException("Erro de tipo na expressão Sub (-): o primeiro operando deve ser do tipo inteiro, mas foi fornecido " + type1);
+       semanticErrorNumber++;
+       semanticErrorMsg.add(left.getTypeErr(semanticErrorNumber, "Type Error in Binary Expression", "IntegerType", left.typeCheck(escopoAtual)));
     }
 
     if (!type2.equals("IntegerType")) {
-      throw new RuntimeException("Erro de tipo na expressão Sub (-): o segundo operando deve ser do tipo inteiro, mas foi fornecido " + type2);
+       semanticErrorNumber++;
+       semanticErrorMsg.add(right.getTypeErr(semanticErrorNumber, "Type Error in Binary Expression", "IntegerType", right.typeCheck(escopoAtual)));
     }
 
     return "IntegerType";

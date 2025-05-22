@@ -7,7 +7,7 @@ import com.example.mijava.symbol.SymbolEntry;
 import com.example.mijava.visitor.ASTVisitor;
 
 public class ClassDeclSimple extends ClassDecl {
-    public Id id;
+    
     public List<VarDecl> varDeclList;
     public List<MethodDecl> methodDeclList;
     public SymTabScopeNode clsScope;
@@ -40,7 +40,7 @@ public class ClassDeclSimple extends ClassDecl {
 
         if (!curScope.insertSym(id.getS(), classDeclEntry)) {
             semanticErrorNumber++;
-            semanticErrorMsg.add(id.Getsemanticerr(semanticErrorNumber, "Duplicate class Definition"));
+            semanticErrorMsg.add(id.getsemanticerr(semanticErrorNumber, "Duplicate class Definition"));
         }
 
         clsScope = new SymTabScopeNode(id.getS(), curScope);

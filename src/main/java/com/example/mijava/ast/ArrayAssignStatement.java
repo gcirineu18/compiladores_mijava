@@ -15,9 +15,6 @@ public class ArrayAssignStatement extends Statement {
 
   @Override
   public void createSymTab(SymTabScopeNode escopoAtual) {
-    i.createSymTab(escopoAtual);
-    e1.createSymTab(escopoAtual);
-    e2.createSymTab(escopoAtual);
   }
 
   @Override
@@ -25,20 +22,22 @@ public class ArrayAssignStatement extends Statement {
     String idType = i.typeCheck(escopoAtual);
 
     if (!idType.equals("IntArrayType")) {
-      throw new RuntimeException("Erro de tipo: esperado um array, mas foi fornecido " + idType);
+      semanticErrorNumber++;
+      semanticErrorMsg.add(i.getTypeErr(semanticErrorNumber, "Type Error in Assign Array statement", "IntArrayType", i.typeCheck(escopoAtual)));
     }
 
     String indexType = e1.typeCheck(escopoAtual);
     if (!indexType.equals("IntegerType")) {
-      throw new RuntimeException("Erro de tipo: índice do array deve ser inteiro, mas foi fornecido " + indexType);
+      semanticErrorNumber++;
+      semanticErrorMsg.add(e1.getTypeErr(semanticErrorNumber, "Type Error in Assign Array statement", "IntegerType", e1.typeCheck(escopoAtual)));
     }
 
     String valueType = e2.typeCheck(escopoAtual);
     if (!valueType.equals("IntegerType")) {
-      throw new RuntimeException("Erro de tipo: valor atribuído ao array deve ser inteiro, mas foi fornecido " + valueType);
+      semanticErrorNumber++;
+      semanticErrorMsg.add(e2.getTypeErr(semanticErrorNumber, "Type Error in Assign Array statement", "IntegerType", e2.typeCheck(escopoAtual)));
     }
-
-    return "void";
+    return "null";
   }
 
   @Override

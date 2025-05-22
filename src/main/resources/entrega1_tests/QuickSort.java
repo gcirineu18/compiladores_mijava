@@ -17,6 +17,7 @@ class QS{
     // Methods
     public int Start(int sz){
 	int aux01 ;
+	aux01 = true;
 	aux01 = this.Init(sz);
 	aux01 = this.Print();
 	System.out.println(9999);
@@ -88,6 +89,7 @@ class QS{
 	}
 	return 0 ;
     }
+
     
 
     // Initialize array of integers

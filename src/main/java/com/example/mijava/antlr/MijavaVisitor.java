@@ -47,12 +47,6 @@ public interface MijavaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFormalList(MijavaParser.FormalListContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link MijavaParser#formalRest}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFormalRest(MijavaParser.FormalRestContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code intArrayType}
 	 * labeled alternative in {@link MijavaParser#type}.
 	 * @param ctx the parse tree
@@ -213,4 +207,10 @@ public interface MijavaVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitInnerExpression(MijavaParser.InnerExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MijavaParser#identifier}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIdentifier(MijavaParser.IdentifierContext ctx);
 }

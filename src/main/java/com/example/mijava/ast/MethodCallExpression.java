@@ -1,8 +1,9 @@
 package com.example.mijava.ast;
-
 import com.example.mijava.symbol.SymTabScopeNode;
+import com.example.mijava.symbol.SymbolEntry;
 import com.example.mijava.visitor.ASTVisitor;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class MethodCallExpression extends Expression {
@@ -18,105 +19,80 @@ public class MethodCallExpression extends Expression {
 
     @Override
     public void createSymTab(SymTabScopeNode escopoAtual) {
-        if (object != null) {
-            object.createSymTab(escopoAtual);
-        }
-
-        methodName.createSymTab(escopoAtual);
-
-        if (arguments != null) {
-            for (Expression arg : arguments) {
-                arg.createSymTab(escopoAtual);
-            }
-        }
     }
 
     @Override
     public String typeCheck(SymTabScopeNode escopoAtual) {
-        SymTabScopeNode classeSymbolTab;
-
-        if (object == null) {
-            SymTabScopeNode escopoTemp = escopoAtual;
-            while (escopoTemp != null && !escopoTemp.isClassScope()) {
-                escopoTemp = escopoTemp.parent;
+        SymTabScopeNode clsSymbolTab;
+            if(object.printNode().equals("This")){
+                SymTabScopeNode tmpScope = escopoAtual;
+                while(tmpScope!=null && !mainScope.next.containsKey(tmpScope.getScopename())){
+                    tmpScope = tmpScope.parent;
+                }
+                if(tmpScope == null){
+                    semanticErrorNumber++;
+                    semanticErrorMsg.add(object.getTypeErr(semanticErrorNumber, "Type Error in Call Object", "this", "Not exist class scope"));
+                    return "null";
+                }
+                clsSymbolTab = mainScope.next.get(tmpScope.getScopename());
             }
-            if (escopoTemp == null) {
-                return "null";
+            else{
+                String clsname = object.typeCheck(escopoAtual);
+                if(!mainScope.next.containsKey(clsname)){
+                    semanticErrorNumber++;
+                    semanticErrorMsg.add(object.getTypeErr(semanticErrorNumber, "Type Error in Call Object", clsname, "Not exist class name"));
+                    return "null";
+                }
+                if (!methodName.typeCheck(mainScope.next.get(clsname)).equals("func")) {
+                    semanticErrorNumber++;
+                    semanticErrorMsg.add(object.getTypeErr(semanticErrorNumber, "Type Error in Call Object", "func", 
+                    methodName.typeCheck(mainScope.next.get(clsname))));
+                    return "null";
+                }
+
+                clsSymbolTab = mainScope.next.get(clsname);
             }
-            classeSymbolTab = escopoTemp;
-        } else {
-            String nomeClasse = object.typeCheck(escopoAtual);
 
-            SymTabScopeNode escopoGlobal = getGlobalScope(escopoAtual);
-            if (escopoGlobal == null || !escopoGlobal.containsClass(nomeClasse)) {
-                return "null";
-            }
+            String retType = clsSymbolTab.getSymTab(methodName.getS()).getKind();
+            HashMap<String, SymbolEntry> fSymTab = clsSymbolTab.next.get(methodName.getS()).getSymTab();
 
-            classeSymbolTab = escopoGlobal.getClassScope(nomeClasse);
-        }
-
-        String nomeMetodo = methodName.getS();
-        if (!classeSymbolTab.containsMethod(nomeMetodo)) {
-            return "null";
-        }
-
-        String tipoRetorno = classeSymbolTab.getMethodReturnType(nomeMetodo);
-        SymTabScopeNode escopoMetodo = classeSymbolTab.getMethodScope(nomeMetodo);
-
-        List<String> tiposParametros = escopoMetodo.getParameterTypes();
-        int numParametros = tiposParametros.size();
-
-        if (arguments != null) {
-            if (arguments.size() != numParametros) {
-            } else {
-                for (int i = 0; i < arguments.size(); i++) {
-                    String tipoArgumento = arguments.get(i).typeCheck(escopoAtual);
-                    if (!tipoArgumento.equals(tiposParametros.get(i))) {
-                    }
+            String [] fpara = new String[fSymTab.size()];
+            int fnum = 0;
+            for(SymbolEntry values : fSymTab.values()){
+                if(values.getKind().equals("arg")){
+                    fpara[values.getPos()] = values.getType();
+                    fnum ++;
                 }
             }
-        } else if (numParametros > 0) {
-        }
+            int num = 0;
+            for(Expression enode : arguments){
+                // args should match
+                if(arguments.size() != fnum){
+                    semanticErrorNumber++;
+                    semanticErrorMsg.add(enode.getTypeErr(semanticErrorNumber, "Args Number Error in Call Object", Integer.toString(fnum), Integer.toString(arguments.size())));
+                    break;
+                }
+                else if(!enode.typeCheck(escopoAtual).equals(fpara[num])){
+                    semanticErrorNumber++;
+                    semanticErrorMsg.add(enode.getTypeErr(semanticErrorNumber, "Args Type Error in Call Object", fpara[num],enode.typeCheck(escopoAtual)));
+                }
+                num ++;
+            }
 
-        return tipoRetorno;
+            return retType;
     }
-
-    private SymTabScopeNode getGlobalScope(SymTabScopeNode escopo) {
-        SymTabScopeNode atual = escopo;
-        while (atual.parent != null) {
-            atual = atual.parent;
-        }
-        return atual;
-    }
-    private String GetTypeErr(int errornum, String msg, String require, String get) {
-        return "Erro Semântico: " + msg +
-                "\n\tEsperado: " + require + ", Obtido: " + get;
-    }
+    
 
     @Override
     public String printNode() {
-        StringBuilder sb = new StringBuilder();
-
-        if (object != null) {
-            sb.append(object.printNode());
-            sb.append(".");
+        String ret =  "Call ( " + object.printNode() + " , " + methodName.printNode();
+        StringBuilder builder = new StringBuilder(ret);
+        for(Expression enode : arguments){
+            builder.append(" , ");
+            builder.append(enode.printNode());
         }
-
-        sb.append(methodName.printNode());
-        sb.append("(");
-
-        if (arguments != null && !arguments.isEmpty()) {
-            for (int i = 0; i < arguments.size(); i++) {
-                sb.append(arguments.get(i).printNode());
-                if (i < arguments.size() - 1) {
-                    sb.append(", ");
-                }
-            }
-        }
-
-        sb.append(")");
-
-        return sb.toString();
+        builder.append(" ) ");
+        return builder.toString();
     }
 
     @Override

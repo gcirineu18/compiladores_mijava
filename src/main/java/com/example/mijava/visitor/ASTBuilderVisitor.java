@@ -6,11 +6,22 @@ import java.util.List;
 import com.example.mijava.antlr.MijavaBaseVisitor;
 import com.example.mijava.antlr.MijavaParser;
 import com.example.mijava.ast.*;
-import com.example.mijava.symbol.ASTtree;
 
 
 public class ASTBuilderVisitor extends MijavaBaseVisitor<ASTNode>{
     
+
+    @Override
+    public ASTNode visitProgram(MijavaParser.ProgramContext ctx){
+        MainClass mainClass =  (MainClass) visit(ctx.mainClass());
+        List<ClassDecl> classDecls = new ArrayList<>();
+        for(int i = 0; i < ctx.classDecl().size(); i++){
+            classDecls.add((ClassDecl) visit(ctx.classDecl(i)));
+        }
+        return new Program(mainClass, classDecls);
+    }
+
+
     @Override
     public ASTNode visitMainClass(MijavaParser.MainClassContext ctx){
         
@@ -36,7 +47,7 @@ public class ASTBuilderVisitor extends MijavaBaseVisitor<ASTNode>{
 
 
         Id id = new Id(ctx.ID(0).getText(), ctx.ID(0).getSymbol().getLine(), ctx.ID(0).getSymbol().getCharPositionInLine());
-
+         
         if(ctx.ID().size() == 1){
             return new ClassDeclSimple(id, varDecl, methodDecl);
         }
@@ -60,7 +71,13 @@ public class ASTBuilderVisitor extends MijavaBaseVisitor<ASTNode>{
     public ASTNode visitMethodDecl(MijavaParser.MethodDeclContext ctx){
         Type type = (Type) visit(ctx.type());
         Id methodName =  new Id(ctx.ID().getText(), ctx.ID().getSymbol().getLine(), ctx.ID().getSymbol().getCharPositionInLine());
-        FormalList formalList = (FormalList) visit(ctx.formalList());
+
+
+        List<FormalList> formalList =  new ArrayList<FormalList>();
+            for(int i = 0; i < ctx.formalList().size(); i++){
+                formalList.add((FormalList) visit(ctx.formalList(i)));
+            }
+
 
         List<VarDecl> varDecl =  new ArrayList<VarDecl>();
             for(int i = 0; i < ctx.varDecl().size(); i++){
@@ -80,31 +97,14 @@ public class ASTBuilderVisitor extends MijavaBaseVisitor<ASTNode>{
     
     @Override
     public ASTNode visitFormalList(MijavaParser.FormalListContext ctx){
-
-        if (ctx.ID() == null  || ctx.type() == null)  {
-        // Não há parâmetros formais
-        return new FormalList(null, null, new ArrayList<>());
-    }    
-
+         
         Id identifier =  new Id(ctx.ID().getText(), ctx.ID().getSymbol().getLine(), ctx.ID().getSymbol().getCharPositionInLine());
         Type type = (Type) visit(ctx.type());
 
-        List<FormalRest> formalRest = new ArrayList<FormalRest>();
-        for(int i = 0; i < ctx.formalRest().size(); i++){
-                formalRest.add((FormalRest) visit(ctx.formalRest(i)));
-            }
-
-        return new FormalList(type, identifier, formalRest);
+        return new FormalList(type, identifier);
     }
 
-    @Override
-    public ASTNode visitFormalRest(MijavaParser.FormalRestContext ctx){
-        
-        Id identifier =  new Id(ctx.ID().getText(), ctx.ID().getSymbol().getLine(), ctx.ID().getSymbol().getCharPositionInLine());
-        Type type = (Type) visit(ctx.type());
 
-        return new FormalRest(type, identifier);
-    }
 
 
     @Override
@@ -114,7 +114,7 @@ public class ASTBuilderVisitor extends MijavaBaseVisitor<ASTNode>{
 
     @Override
     public ASTNode visitBooleanType(MijavaParser.BooleanTypeContext ctx){
-        return new IntArrayType();
+        return new BooleanType();
     }
 
 
@@ -125,8 +125,7 @@ public class ASTBuilderVisitor extends MijavaBaseVisitor<ASTNode>{
 
     @Override
     public ASTNode visitIdentifierType(MijavaParser.IdentifierTypeContext ctx){
-        Id id =  new Id(ctx.ID().getText(), ctx.ID().getSymbol().getLine(), ctx.ID().getSymbol().getCharPositionInLine());
-        return new IdentifierType(id);
+        return new IdentifierType(ctx.getText());
     }
 
     @Override
@@ -181,7 +180,7 @@ public class ASTBuilderVisitor extends MijavaBaseVisitor<ASTNode>{
 
     @Override
     public ASTNode visitNewObjectExpression(MijavaParser.NewObjectExpressionContext ctx) {
-        Id id =  new Id(ctx.ID().getText(), ctx.ID().getSymbol().getLine(), ctx.ID().getSymbol().getCharPositionInLine());
+        Id id = new Id(ctx.ID().getText(), ctx.ID().getSymbol().getLine(), ctx.ID().getSymbol().getCharPositionInLine());
         return new NewObjectExpression(id);
     }
 
@@ -228,7 +227,7 @@ public class ASTBuilderVisitor extends MijavaBaseVisitor<ASTNode>{
         Expression array = (Expression) visit(ctx.expression(0));
         Expression index = (Expression) visit(ctx.expression(1));
 
-        return new ArrayAccessExpression(array, index);
+        return new ArrayAccessExpression(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine(), array, index);
     }
 
     @Override
@@ -243,7 +242,7 @@ public class ASTBuilderVisitor extends MijavaBaseVisitor<ASTNode>{
         Expression expr = (Expression) visit(ctx.expression(0));
 
         List<Expression> expressions = new ArrayList<>();
-        for (int i = 0; i < ctx.expression().size(); i++){
+        for (int i = 1; i < ctx.expression().size(); i++){
             expressions.add((Expression) visit(ctx.expression(i)));
         }
 
@@ -267,8 +266,7 @@ public class ASTBuilderVisitor extends MijavaBaseVisitor<ASTNode>{
 
     @Override
     public ASTNode visitIdentifierExpression(MijavaParser.IdentifierExpressionContext ctx) {
-        Id id =  new Id(ctx.ID().getText(), ctx.ID().getSymbol().getLine(), ctx.ID().getSymbol().getCharPositionInLine());
-        return new IdentifierExpression(id);
+        return new IdentifierExpression(ctx.getText(), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
     }
 
     @Override
@@ -291,7 +289,14 @@ public class ASTBuilderVisitor extends MijavaBaseVisitor<ASTNode>{
     @Override
     public ASTNode visitInnerExpression(MijavaParser.InnerExpressionContext ctx) { 
     return visit(ctx.expression());
-}
+    }
+
+    @Override
+    public ASTNode visitIdentifier(MijavaParser.IdentifierContext ctx){
+         return new Id(ctx.ID().getText(), ctx.ID().getSymbol().getLine(), ctx.ID().getSymbol().getCharPositionInLine());
+
+    }
+
 
 }
 

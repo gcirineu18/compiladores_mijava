@@ -5,18 +5,22 @@ import com.example.mijava.symbol.SymTabScopeNode;
 
 public class BooleanType extends Type{
 
+    public BooleanType(){
+        this.name = "BooleanType";
+    }
+
     @Override
     public void createSymTab(SymTabScopeNode escopoatual) {
     }
 
     @Override
     public String typeCheck(SymTabScopeNode escopoatual) {
-        return "BooleanType";
+        return printNode();
     }
 
     @Override
     public String printNode() {
-        return "boolean";
+        return "BooleanType";
     }
 
     @Override

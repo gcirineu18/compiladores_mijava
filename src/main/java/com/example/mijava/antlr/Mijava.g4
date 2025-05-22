@@ -1,7 +1,7 @@
 grammar Mijava;
 
 
-program: mainClass classDecl*;
+program: mainClass (classDecl)* EOF;
 
 mainClass:
 	CLASS ID LBRACE PUBLIC STATIC VOID MAIN LPAREN STRING LBRACK RBRACK ID RPAREN LBRACE statement
@@ -12,12 +12,11 @@ classDecl: CLASS ID (EXTENDS ID)? LBRACE (varDecl)* (methodDecl)* RBRACE;
 varDecl: type ID SEMI;
 
 methodDecl:
-	PUBLIC type ID LPAREN formalList RPAREN LBRACE (varDecl)* (
+	PUBLIC type ID LPAREN (formalList(COMMA formalList)*)? RPAREN LBRACE (varDecl)* (
 		statement
 	)* RETURN expression SEMI RBRACE;
 
-formalList: type ID (formalRest)* |;
-formalRest: COMMA type ID;
+formalList: type ID;
 
 type: INT LBRACK RBRACK # intArrayType
 	| INT 				# integerType
@@ -47,6 +46,8 @@ expression:
 	| NOT expression													 # notExpression	
 	| LPAREN expression RPAREN											 # innerExpression;
 
+
+identifier: ID;
 
 LPAREN: '(';
 RPAREN: ')';
