@@ -1,4 +1,4 @@
-// Generated from com/example/mijava/antlr/Mijava.g4 by ANTLR 4.13.2
+// Generated from /home/guilherme/Documentos/Documentos_Importantes/UFC/7_semestre/Compiladores/mijava/src/main/java/com/example/mijava/antlr/Mijava.g4 by ANTLR 4.13.2
 package com.example.mijava.antlr;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
@@ -54,6 +54,13 @@ public class MijavaBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitFormalList(MijavaParser.FormalListContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitFormalRest(MijavaParser.FormalRestContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -88,6 +88,7 @@ class QS{
 	}
 	return 0 ;
     }
+
     
 
     // Initialize array of integers

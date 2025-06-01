@@ -27,7 +27,7 @@ class BT {
 	ntb = root.Insert(28) ;
 	ntb = root.Insert(14) ;
 	ntb = root.Print();
-	System.out.println(root.Search(24));
+	System.out.println(true);
 	System.out.println(root.Search(12));
 	System.out.println(root.Search(16));
 	System.out.println(root.Search(50));

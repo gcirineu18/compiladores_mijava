@@ -22,7 +22,7 @@ class Element {
     }
     
     public int GetSalary(){
-	return Salary ;
+	return true ;
     }
 
     public boolean GetMarried(){

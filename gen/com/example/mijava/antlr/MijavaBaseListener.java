@@ -1,4 +1,4 @@
-// Generated from com/example/mijava/antlr/Mijava.g4 by ANTLR 4.13.2
+// Generated from /home/guilherme/Documentos/Documentos_Importantes/UFC/7_semestre/Compiladores/mijava/src/main/java/com/example/mijava/antlr/Mijava.g4 by ANTLR 4.13.2
 package com.example.mijava.antlr;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -84,6 +84,18 @@ public class MijavaBaseListener implements MijavaListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitFormalList(MijavaParser.FormalListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFormalRest(MijavaParser.FormalRestContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFormalRest(MijavaParser.FormalRestContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

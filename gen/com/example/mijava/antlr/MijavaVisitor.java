@@ -1,4 +1,4 @@
-// Generated from com/example/mijava/antlr/Mijava.g4 by ANTLR 4.13.2
+// Generated from /home/guilherme/Documentos/Documentos_Importantes/UFC/7_semestre/Compiladores/mijava/src/main/java/com/example/mijava/antlr/Mijava.g4 by ANTLR 4.13.2
 package com.example.mijava.antlr;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -46,6 +46,12 @@ public interface MijavaVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitFormalList(MijavaParser.FormalListContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MijavaParser#formalRest}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFormalRest(MijavaParser.FormalRestContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code intArrayType}
 	 * labeled alternative in {@link MijavaParser#type}.
