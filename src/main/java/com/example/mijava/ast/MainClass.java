@@ -30,8 +30,8 @@ public class MainClass extends ASTNode {
             if(!curScope.insertSym(className.getS(), clsentry)){
                 semanticErrorNumber ++;
                 semanticErrorMsg.add(className.getsemanticerr(semanticErrorNumber, "Duplicate class definition"));
-            }
-
+            }                          
+   
             clsScope = new SymTabScopeNode(className.getS(), curScope);
             curScope.next.put(className.getS(), clsScope);
 

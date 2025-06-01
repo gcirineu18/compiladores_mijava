@@ -23,6 +23,7 @@ public class MethodCallExpression extends Expression {
 
     @Override
     public String typeCheck(SymTabScopeNode escopoAtual) {
+        
         SymTabScopeNode clsSymbolTab;
             if(object.printNode().equals("This")){
                 SymTabScopeNode tmpScope = escopoAtual;
@@ -52,6 +53,7 @@ public class MethodCallExpression extends Expression {
 
                 clsSymbolTab = mainScope.next.get(clsname);
             }
+            
 
             String retType = clsSymbolTab.getSymTab(methodName.getS()).getKind();
             HashMap<String, SymbolEntry> fSymTab = clsSymbolTab.next.get(methodName.getS()).getSymTab();
@@ -65,8 +67,15 @@ public class MethodCallExpression extends Expression {
                 }
             }
             int num = 0;
+     
+            if(arguments.size() != fnum){
+                    semanticErrorNumber++;
+                    semanticErrorMsg.add( "Args Number Error in Call Object " +  Integer.toString(fnum) + ", got "  + Integer.toString(arguments.size()));
+                    
+                }
             for(Expression enode : arguments){
                 // args should match
+                
                 if(arguments.size() != fnum){
                     semanticErrorNumber++;
                     semanticErrorMsg.add(enode.getTypeErr(semanticErrorNumber, "Args Number Error in Call Object", Integer.toString(fnum), Integer.toString(arguments.size())));

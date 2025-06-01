@@ -41,6 +41,7 @@ public class FormalList extends ASTNode {
             semanticErrorNumber++;
             semanticErrorMsg.add(identifier.getTypeErr(semanticErrorNumber, "Type Error", type.name, curScope.getSymTab(identifier.getS()).getKind()));
         }
+        
 
         return "null";
     }
