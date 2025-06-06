@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExpList {
-    public ExpAbstract head;
+    public Exp head;
     public ExpList tail;
 }
