@@ -1,14 +1,6 @@
 package com.example.mijava.temp;
+import com.example.mijava.symbol.SymbolEntry;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
-@EqualsAndHashCode(callSuper = false)
-@AllArgsConstructor
-@Data
-@Builder
 public class Label {
     private String name;
     private static int count;
@@ -17,6 +9,13 @@ public class Label {
         this("L" + count++);
     }
 
+    public Label(String n) {
+        this.name = n;
+    }
+
+    public Label(SymbolEntry s) {
+        this(s.toString());
+    }
 
     public String toString() {
         return name;

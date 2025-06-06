@@ -1,16 +1,18 @@
 package com.example.mijava.mips;
 
 import com.example.mijava.temp.Temp;
+import com.example.mijava.irtree.TEMP;
 import com.example.mijava.frame.Access;
+import com.example.mijava.irtree.Exp;
 
-public class Inreg extends Access {
+public class InReg extends Access {
     Temp temp;
 
     InReg(Temp t) {
         this.temp = t;
     }
 
-    public ExpAbstract exp(ExpAbstract fp) {
+    public Exp exp(Exp fp) {
         return new TEMP(temp);
     }
 

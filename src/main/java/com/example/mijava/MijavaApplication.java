@@ -19,7 +19,7 @@ public class MijavaApplication {
 
 	public static void main(String[] args) throws IOException {
         CharStream input = CharStreams.fromFileName("src/main/resources/entrega1_tests/QuickSort.java");
-//        CharStream input = CharStreams.fromString("class Test{ public static void main( String[] args){if (true) System.out.println(1); else System.out.println(0);}}");
+//      CharStream input = CharStreams.fromString("class Test{ public static void main( String[] args){if (true) System.out.println(1); else System.out.println(0);}}");
         MijavaLexer lexer = new MijavaLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         MijavaParser parser = new MijavaParser(tokens);
@@ -34,7 +34,7 @@ public class MijavaApplication {
        SymTabScopeNode globalScope = new SymTabScopeNode("global", null);
 
         root.createSymTab(globalScope);
-     //   ASTNode.printSymTabScope();
+   //   ASTNode.printSymTabScope();
         root.typeCheck(globalScope);
         for( String erro: ASTNode.semanticErrorMsg){
             System.out.println(erro);    
