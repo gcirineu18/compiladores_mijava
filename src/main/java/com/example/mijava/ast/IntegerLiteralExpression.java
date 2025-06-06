@@ -6,7 +6,8 @@ import com.example.mijava.visitor.ASTVisitor;
 public class IntegerLiteralExpression extends Expression {
     public int value;
 
-    public IntegerLiteralExpression(int value) {
+    public IntegerLiteralExpression(int value, int line, int charpos) {
+        super(line, charpos);
         this.value = value;
     }
 

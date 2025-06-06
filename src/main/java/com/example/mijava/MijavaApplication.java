@@ -34,7 +34,7 @@ public class MijavaApplication {
        SymTabScopeNode globalScope = new SymTabScopeNode("global", null);
 
         root.createSymTab(globalScope);
-        ASTNode.printSymTabScope();
+     //   ASTNode.printSymTabScope();
         root.typeCheck(globalScope);
         for( String erro: ASTNode.semanticErrorMsg){
             System.out.println(erro);    

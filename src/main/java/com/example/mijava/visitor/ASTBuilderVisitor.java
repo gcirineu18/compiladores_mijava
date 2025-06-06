@@ -251,7 +251,8 @@ public class ASTBuilderVisitor extends MijavaBaseVisitor<ASTNode>{
 
     @Override
     public ASTNode visitIntergerLiteralExpression(MijavaParser.IntergerLiteralExpressionContext ctx) {
-        return new IntegerLiteralExpression(Integer.parseInt(ctx.INTEGER_LITERAL().getText()));
+        return new IntegerLiteralExpression(Integer.parseInt(ctx.INTEGER_LITERAL().getText()),  ctx.getStart().getLine(),
+        ctx.getStart().getCharPositionInLine());
     }
 
     @Override
