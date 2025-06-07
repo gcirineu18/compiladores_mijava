@@ -22,5 +22,10 @@ public class MOVE extends Stm {
 	   return new MOVE(new MEM(kids.head), kids.tail.head);
 	else return new MOVE(dst, kids.head);
   }
+
+  @Override
+  public String toString() {
+      return "MOVE(" + dst + ", " + src + ")";
+  }
 }
 

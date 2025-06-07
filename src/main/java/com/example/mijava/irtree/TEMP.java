@@ -7,5 +7,10 @@ public class TEMP extends ExpAbstract {
   public TEMP(Temp t) {this.temp = t;}
   public ExpList kids() {return null;}
   public ExpAbstract build(ExpList kids) {return this;}
+
+  @Override
+  public String toString() {
+      return "TEMP " + temp;
+  }
 }
 

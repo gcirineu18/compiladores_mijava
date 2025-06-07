@@ -15,5 +15,20 @@ public class JUMP extends Stm {
   public Stm build(ExpList kids) {
     return new JUMP(kids.head,targets);
   }
+
+  @Override
+  public String toString() {
+      StringBuilder sb = new StringBuilder();
+      sb.append("JUMP(");
+      sb.append(exp);
+      sb.append(", ");
+      if (targets != null) {
+          sb.append(targets);
+      } else {
+          sb.append("null");
+      }
+      sb.append(")");
+      return sb.toString();
+  }
 }
 

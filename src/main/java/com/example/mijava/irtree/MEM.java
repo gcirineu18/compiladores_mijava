@@ -13,5 +13,9 @@ public class MEM extends ExpAbstract {
   public ExpAbstract build(ExpList kids) {
     return new MEM(kids.head);
   }
+  @Override
+  public String toString() {
+      return "MEM(" + exp + ")";
+  }
 }
 

@@ -9,5 +9,10 @@ public class LABEL extends Stm {
   public Stm build(ExpList kids) {
     return this;
   }
+
+  @Override
+  public String toString() {
+      return "LABEL " + label.toString();
+  }
 }
 
