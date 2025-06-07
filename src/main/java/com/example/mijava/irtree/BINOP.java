@@ -1,5 +1,9 @@
 package com.example.mijava.irtree;
 
+import lombok.Builder;
+import lombok.Data;
+
+@Builder
 public class BINOP extends ExpAbstract {
   public int binop;
   public ExpAbstract left, right;

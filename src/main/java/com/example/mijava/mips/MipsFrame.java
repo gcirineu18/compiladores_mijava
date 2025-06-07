@@ -61,7 +61,7 @@ public class MipsFrame extends Frame {
 	    "         syscall          \n" ;
     }
     
-    public Frame newFrame(String name, List<Boolean> formals) {
+    public MipsFrame newFrame(String name, List<Boolean> formals) {
         if (this.name != null) name = this.name + "." + name;
         return new MipsFrame(name, formals);
     }
@@ -92,7 +92,7 @@ public class MipsFrame extends Frame {
 	int offset = 0;
 
     Iterator<Boolean> escapes = f.iterator();
-	formals.add(allocLocal(escapes.next().booleanValue()));
+	formals.add(allocLocal());
 	actuals.add(new InReg(V0));
 
 	for (int i = 0; i < argRegs.length; ++i) {
@@ -121,12 +121,7 @@ public class MipsFrame extends Frame {
 
     private int offset = 0;
 
-    public Access allocLocal(boolean escape) {
-	if (escape) {
-	    Access result = new InFrame(offset);
-	    offset -= wordSize;
-	    return result;
-	} else
+    public Access allocLocal() {
 	    return new InReg(new Temp());
     }
 
@@ -343,7 +338,7 @@ public class MipsFrame extends Frame {
     {
 	if (i >= calleeSaves.length)
 	    return;
-	Access a = allocLocal(!spilling);
+	Access a = allocLocal();
 	assignCallees(i+1, body);
 	body.add(0, MOVE(a.exp(TEMP(FP)), TEMP(calleeSaves[i])));
 	body.add(MOVE(TEMP(calleeSaves[i]), a.exp(TEMP(FP))));

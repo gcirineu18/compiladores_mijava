@@ -9,11 +9,16 @@ import org.springframework.expression.spel.ast.Identifier;
 
 import com.example.mijava.ast.Add;
 import com.example.mijava.ast.AndExpression;
+import com.example.mijava.ast.ArrayAccessExpression;
+import com.example.mijava.ast.ArrayAssignStatement;
+import com.example.mijava.ast.ArrayLengthExpression;
+import com.example.mijava.ast.AssignStatement;
 import com.example.mijava.ast.BlockStatement;
 import com.example.mijava.ast.BooleanType;
 import com.example.mijava.ast.ClassDeclExtends;
 import com.example.mijava.ast.ClassDeclSimple;
 import com.example.mijava.ast.FalseExpression;
+import com.example.mijava.ast.FormalList;
 import com.example.mijava.ast.IdentifierExpression;
 import com.example.mijava.ast.IdentifierType;
 import com.example.mijava.ast.IfStatement;
@@ -41,7 +46,6 @@ import com.example.mijava.irtree.CJUMP;
 import com.example.mijava.irtree.CONST;
 import com.example.mijava.irtree.ESEQ;
 import com.example.mijava.irtree.EXP;
-import com.example.mijava.irtree.Exp;
 import com.example.mijava.irtree.ExpAbstract;
 import com.example.mijava.irtree.ExpList;
 import com.example.mijava.irtree.JUMP;
@@ -77,20 +81,25 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 	@Builder.Default
 	private List<ExpAbstract> listExp = new ArrayList<>();
 	@Builder.Default
-	private SymTabScopeNode symTabScopeNode = new SymTabScopeNode(null, null);
+	private SymTabScopeNode mainTable = new SymTabScopeNode(null, null);
+	@Builder.Default
+	private SymTabScopeNode currentClassTable = null;
+	@Builder.Default
+	private SymTabScopeNode currentMethodTable = null;
 
 
 	public IRTreeVisitor(SymTabScopeNode symTabScopeNode, MipsFrame frame) {
-		this.symTabScopeNode = symTabScopeNode;
+		this.mainTable = symTabScopeNode;
 		this.frame = frame;
 		this.frag = new Frag(null);
 		this.initialFrag = this.frag;
 		this.listExp = new ArrayList<>();
 	}
 
+
 	public Exp visit(AndExpression a) {
-		var lheExpr = a.getLhe().accept(this);
-		var rheExpr = a.getRhe().accept(this);
+		var lheExpr = a.left.accept(this);
+		var rheExpr = a.right.accept(this);
 
 		var andBinop = BINOP.builder()
 			.binop(BINOP.AND)
@@ -137,30 +146,30 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 	}
 
 	public Exp visit(MethodCallExpression c) {
-		ClassTable tmpClassTable = null;
-		MethodTable tmpMethodTable;
+		SymTabScopeNode tmpClassTable = null;
+		SymTabScopeNode tmpMethodTable;
 		String tmpClassSymbol = null;
 		ExpList expList = null;
 
-		int size = c.getExpressionList().getList().size();
+		int size = c.arguments.size();
 
 		for (int i = size - 1; i >= 0; i--) {
-			var expr = c.getExpressionList().getList().get(i).accept(this);
+			var expr = c.arguments.get(i).accept(this);
 			expList = new ExpList(expr.unEx(), expList);
 		}
 
-		expList = new ExpList(c.getOwner().accept(this).unEx(), expList);
+		expList = new ExpList(c.object.accept(this).unEx(), expList);
 
-		if (c.getOwner() instanceof Call) {
+		if (c.object instanceof MethodCallExpression) {
 			tmpClassTable = currentClassTable;
 
-			tmpMethodTable = tmpClassTable.getMethodsContext().get(c.getMethod().getS());
+			tmpMethodTable = tmpClassTable.getMethodScope(c.methodName.getS());
 
-			tmpClassTable = mainTable.getMap().get(tmpMethodTable.getClassParent().getClassName());
+			tmpClassTable = tmpMethodTable.getParent(); 
 		}
 
-		if (c.getOwner() instanceof IdentifierExpression idExp) {
-			if (currentMethodTable.getLocalsContext().get(idExp.getId()) instanceof IdentifierType idType) {
+		if (c.object instanceof IdentifierExpression idExp) {
+			if (currentMethodTable.getParameterTypes() getLocalsContext().get(idExp.getId()) instanceof IdentifierType idType) {
 				tmpClassSymbol = idType.getS();
 			} else if (currentMethodTable.getParamsContext().get(idExp.getId()) instanceof IdentifierType idType)
 				tmpClassSymbol = idType.getS();
@@ -169,11 +178,11 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 			}
 		}
 
-		if (c.getOwner() instanceof NewObject idNewObject) {
+		if (c.object instanceof NewObjectExpression idNewObject) {
 			tmpClassTable = mainTable.getMap().get(idNewObject.getIdentifier().getS());
 		}
-		if (c.getOwner() instanceof This) tmpClassTable = currentClassTable;
-		if (tmpClassTable != null) tmpClassSymbol = tmpClassTable.getClassName();
+		if (c.object instanceof ThisExpression) tmpClassTable = currentClassTable;
+		if (tmpClassTable != null) tmpClassSymbol = tmpClassTable  getClassName();
 
 		var label = new Label(tmpClassSymbol + "." + c.getMethod().getS());
 
@@ -197,8 +206,8 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 	}
 
 	public Exp visit(NewObjectExpression n) {
-		currentClassTable = mainTable.getMap().get(n.getIdentifier().getS());
-		int sizeOfFields = mainTable.getMap().get(n.getIdentifier().getS()).getFieldsContext().size();
+		currentClassTable = mainTable.getClassScope(n.getId().getS());
+		int sizeOfFields = mainTable.getClassScope(n.getId().getS())
 
 		var parametersList = new LinkedList<ExpAbstract>();
 		parametersList.add(
@@ -222,9 +231,9 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 		return new Exp(tempAllocation);
 	}
 
-	public Exp visit(ArrayLookup a) {
-		var idx = a.getIdx().accept(this);
-		var array = a.getArray().accept(this);
+	public Exp visit(ArrayAccessExpression a) {
+		var idx = a.getRight().accept(this);
+		var array = a.getLeft().accept(this);
 
 		var arrayLoopUp = MEM.builder()
 			.exp(
@@ -245,10 +254,10 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 		return new Exp(arrayLoopUp);
 	}
 
-	public Exp visit(ArrayAssign a) {
-		var id = a.getIdentifier().accept(this);
-		var idx = a.getIndex().accept(this);
-		var val = a.getValue().accept(this);
+	public Exp visit(ArrayAssignStatement a) {
+		var id = a.getI().accept(this);
+		var idx = a.getE1().accept(this);
+		var val = a.getE2().accept(this);
 
 		var offset = BINOP.builder()
 			.binop(BINOP.MUL)
@@ -278,7 +287,7 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 		return new Exp(arrayAssign);
 	}
 
-	public Exp visit(ArrayLength a) {
+	public Exp visit(ArrayLengthExpression a) {
 		var pointer = a.getArray().accept(this);
 
 		var tempAlloc = MEM.builder()
@@ -289,8 +298,8 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 	}
 
 	public Exp visit(Add p) {
-		var lheExpr = p.getLhe().accept(this);
-		var rheExpr = p.getRhe().accept(this);
+		var lheExpr = p.getLeft().accept(this);
+		var rheExpr = p.getRight().accept(this);
 
 		var plusBinop = BINOP.builder()
 			.binop(BINOP.PLUS)
@@ -302,8 +311,8 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 	}
 
 	public Exp visit(Sub m) {
-		var lheExpr = m.getLhe().accept(this);
-		var rheExpr = m.getRhe().accept(this);
+		var lheExpr = m.getLeft().accept(this);
+		var rheExpr = m.getRight().accept(this);
 
 		var minusBinop = BINOP.builder()
 			.binop(BINOP.MINUS)
@@ -315,8 +324,8 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 	}
 
 	public Exp visit(Mul t) {
-		var lheExpr = t.getLhe().accept(this);
-		var rheExpr = t.getRhe().accept(this);
+		var lheExpr = t.getLeft().accept(this);
+		var rheExpr = t.getRight().accept(this);
 
 		var timeBinop = BINOP.builder()
 			.binop(BINOP.MUL)
@@ -342,8 +351,8 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 	}
 
 	public Exp visit(LessThan l) {
-		var lheExpr = l.getLhe().accept(this);
-		var rheExpr = l.getRhe().accept(this);
+		var lheExpr = l.left.accept(this);
+		var rheExpr = l.right.accept(this);
 
 		var lessThanBinop = BINOP.builder()
 			.binop(BINOP.MINUS)
@@ -355,7 +364,7 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 	}
 
 	public Exp visit(NewArrayExpression n) {
-		var newArraySize = n.getSize().accept(this);
+		var newArraySize = n.e.accept(this);
 		var parametersList = new LinkedList<ExpAbstract>();
 
 		// mem size to alloc
@@ -395,8 +404,8 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 			.relop(CJUMP.GT)
 			.left(cond)
 			.right(new CONST(1))
-			.condTrue(bodyLabel)
-			.condFalse(endLabel)
+			.iftrue(bodyLabel)
+			.iffalse(endLabel)
 			.build();
 
 		var whileStatement = SEQ.builder()
@@ -426,8 +435,8 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 		var endLabel = new Label();
 
 		var condExpr = i.getCondition().accept(this);
-		var trueStmt = new EXP(i.getThenBranch().accept(this).unEx());
-		var falseStmt = new EXP(i.getElseBranch().accept(this).unEx());
+		var trueStmt = new EXP(i.getThenStatement().accept(this).unEx());
+		var falseStmt = new EXP(i.getElseStatement().accept(this).unEx());
 
 		var thenStatement = new SEQ(
 			new SEQ(new LABEL(trueLabel), trueStmt),
@@ -443,21 +452,20 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 			.relop(CJUMP.EQ)
 			.left(new CONST(1))
 			.right(condExpr.unEx())
-			.condTrue(trueLabel)
-			.condFalse(falseLabel)
+			.iftrue(trueLabel)
+			.iffalse(falseLabel)
 			.build();
 
 		var ifStmt = new SEQ(condStmt, thenElseStmt);
 
-		// sera que precisa desse ESEQ? IDK you tell me
 		var ifESEQ = new ESEQ(new SEQ(ifStmt, new LABEL(endLabel)), null);
 		addExp(ifESEQ);
 		return new Exp(ifESEQ);
 	}
 
-	public Exp visit(Assign a) {
-		var id = a.getIdentifier().accept(this);
-		var value = a.getValue().accept(this);
+	public Exp visit(AssignStatement a) {
+		var id = a.id.accept(this);
+		var value = a.expression.accept(this);
 
 		var moveValue = MOVE.builder()
 			.dst(id.unEx())
@@ -474,7 +482,7 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 
 	public Exp visit(PrintStatement s) {
 		var argsList = new LinkedList<ExpAbstract>();
-		var exp = s.getExpression().accept(this);
+		var exp = s.expression.accept(this);
 		argsList.add(exp.unEx());
 
 		var call = frame.externalCall("print", argsList);
@@ -483,11 +491,11 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 	}
 
 	public Exp visit(BlockStatement b) {
-		var size = b.getStatements().getStatements().size();
+		var size = b.getStatements().size();
 		ExpAbstract expBlock = new CONST(0);
 
 		for (int i = 0; i < size; i++) {
-			var expr = new EXP(b.getStatements().getStatements().get(i).accept(this).unEx());
+			var expr = new EXP(b.getStatements().get(i).accept(this).unEx()); 
 
 			expBlock = ESEQ.builder()
 				.stm(
@@ -505,16 +513,16 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 	}
 
 	public Exp visit(MainClass m) {
-		currentClassTable = mainTable.getMap().get(m.getClassName().getS());
-		currentMethodTable = currentClassTable.getMethodsContext().get("main");
-
+		currentClassTable = mainTable.getClassScope(m.getClassName().getS());
+		currentMethodTable = currentClassTable.getMethodScope("main");
 		Stm stmBody = new EXP(new CONST(0));
 		var stmList = new ArrayList<Stm>();
 		var escapeList = new ArrayList<Boolean>();
 		escapeList.add(false);
+		
 		frame = frame.newFrame("main", escapeList);
 
-		var size = m.getStatements().getStatements().size();
+		var size = m.getStatement()
 		for (int i = 0; i < size; i++) {
 			stmBody = new SEQ(
 				stmBody,
@@ -535,25 +543,24 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 	}
 
 	public Exp visit(ClassDeclSimple c) {
-		currentClassTable = mainTable.getMap().get(c.getClassName().getS());
+		currentClassTable = mainTable.getClassScope(c.getId().getS()); 
+		c.getId().accept(this);
 
-		c.getClassName().accept(this);
-
-		c.getFields().getVarDecls().forEach(field -> field.accept(this));
-		c.getMethods().getMethodDecls().forEach(method -> method.accept(this));
+		c.getVarDeclList().forEach(field -> field.accept(this)); 
+		c.getMethodDeclList().forEach(method -> method.accept(this));
 
 		currentClassTable = null;
 		return null;
 	}
 
 	public Exp visit(ClassDeclExtends c) {
-		currentClassTable = mainTable.getMap().get(c.getClassName().getS());
+		currentClassTable = mainTable.getClassScope(c.getId().getS()); 
 
-		c.getClassName().accept(this);
-		c.getParent().accept(this);
+		c.getId().accept(this);
+		c.getId2().accept(this);
 
-		c.getMethods().getMethodDecls().forEach(method -> method.accept(this));
-		c.getFields().getVarDecls().forEach(field -> field.accept(this));
+		c.getMethodDeclList().forEach(method -> method.accept(this));
+		c.getVarDeclList().forEach(field -> field.accept(this));
 
 		currentClassTable = null;
 		return null;
@@ -561,17 +568,18 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 
 	public Exp visit(Program p) {
 		p.getMainClass().accept(this);
-		p.getClasses().getClassDecls().forEach(classDecl -> classDecl.accept(this));
+		p.getClasses().forEach(classDecl -> classDecl.accept(this));
 		return null;
 	}
 
 	public Exp visit(MethodDecl m) {
-		currentMethodTable = currentClassTable.getMethodsContext().get(m.getIdentifier());
+
+		 SymTabScopeNode currentMethodTable = mainTable.getMethodScope(m.toString());
 
 		Stm stmBody = new EXP(new CONST(0));
 		var escapeList = new ArrayList<Boolean>();
-		int sizeFormals = m.getFormals().getFormals().size();
-		int sizeStatement = m.getStatements().getStatements().size();
+		int sizeFormals = m.getParameters().size();
+		int sizeStatement = m.getStatements().size();  
 
 		for (int i = 0; i <= sizeFormals; i++) {
 			escapeList.add(false);
@@ -579,18 +587,18 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 
 
 		frame = frame.newFrame(
-			currentClassTable.getClassName() + "$" + currentMethodTable.getMethodName(),
+			currentClassTable.getScopename() + "$" + currentMethodTable.getScopename(),
 			escapeList
 		);
 
-		m.getFormals().getFormals().forEach(formal -> formal.accept(this));
-		m.getVarDecls().getVarDecls().forEach(varDecl -> varDecl.accept(this));
+		m. getParameters().forEach(formal -> formal.accept(this));
+		m.getVarDecls().forEach(varDecl -> varDecl.accept(this));
 
 		for (int i = 0; i < sizeStatement; i++) {
 			stmBody = new SEQ(
 				stmBody,
 				new EXP(
-					m.getStatements().getStatements().get(i).accept(this).unEx()
+					m.getStatements().get(i).accept(this).unEx()
 				)
 			);
 		}
@@ -611,7 +619,7 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 		return null;
 	}
 
-	public Exp visit(Formal f) {
+	public Exp visit(FormalList f) {
 		frame.allocLocal();
 		return null;
 	}

@@ -29,17 +29,29 @@ public class MijavaApplication {
 
        ASTBuilderVisitor ASTvisitor = new ASTBuilderVisitor();
        ASTNode root = ASTvisitor.visit(tree);
-       System.out.println(root.printNode());
+      // System.out.println(root.printNode());
 
        SymTabScopeNode globalScope = new SymTabScopeNode("global", null);
 
         root.createSymTab(globalScope);
-   //   ASTNode.printSymTabScope();
+       ASTNode.printSymTabScope();
+
         root.typeCheck(globalScope);
         for( String erro: ASTNode.semanticErrorMsg){
             System.out.println(erro);    
         }
 
+        SymTabScopeNode sizeOfFields = ASTNode.mainScope;
+        SymTabScopeNode qsScope = sizeOfFields.getMethodScope("QS").getMethodScope("Sort");
+if (qsScope != null) {
+        
+    for (SymTabScopeNode childScope : qsScope.next.values()) {
+        System.out.println("Nome do escopo filho: " + childScope.getScopename());
+        // Se quiser mais detalhes, pode acessar outros métodos do childScope aqui
+    }
+} else {
+    System.out.println("Classe Sort não encontrada.");
+}
 	// SpringApplication.run(MijavaApplication.class, args);
        
 	}

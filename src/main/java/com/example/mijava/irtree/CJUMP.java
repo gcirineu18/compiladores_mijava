@@ -1,7 +1,12 @@
 package com.example.mijava.irtree;
 import com.example.mijava.temp.Temp;
+
+import lombok.Builder;
+
 import com.example.mijava.temp.Label;
 
+
+@Builder
 public class CJUMP extends Stm {
   public int relop;
   public ExpAbstract left, right;

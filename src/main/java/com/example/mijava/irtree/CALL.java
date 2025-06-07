@@ -1,7 +1,11 @@
 package com.example.mijava.irtree;
 import com.example.mijava.temp.Temp;
+
+import lombok.Builder;
+
 import com.example.mijava.temp.Label;
 
+@Builder 
 public class CALL extends ExpAbstract {
   
   public ExpAbstract func;
