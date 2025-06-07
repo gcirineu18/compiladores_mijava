@@ -6,8 +6,14 @@ import java.io.IOException;
 import com.example.mijava.antlr.MijavaLexer;
 import com.example.mijava.antlr.MijavaParser;
 import com.example.mijava.ast.ASTNode;
+import com.example.mijava.ast.Program;
+import com.example.mijava.mips.MipsFrame;
 import com.example.mijava.symbol.SymTabScopeNode;
 import com.example.mijava.visitor.ASTBuilderVisitor;
+import com.example.mijava.visitor.IRTree.IRTreeVisitor;
+
+import lombok.var;
+
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -18,7 +24,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class MijavaApplication {
 
 	public static void main(String[] args) throws IOException {
-        CharStream input = CharStreams.fromFileName("src/main/resources/entrega1_tests/QuickSort.java");
+        CharStream input = CharStreams.fromFileName("src/main/resources/entrega1_tests/Factorial.java");
 //      CharStream input = CharStreams.fromString("class Test{ public static void main( String[] args){if (true) System.out.println(1); else System.out.println(0);}}");
         MijavaLexer lexer = new MijavaLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -34,24 +40,20 @@ public class MijavaApplication {
        SymTabScopeNode globalScope = new SymTabScopeNode("global", null);
 
         root.createSymTab(globalScope);
-       ASTNode.printSymTabScope();
+        ASTNode.printSymTabScope();
 
         root.typeCheck(globalScope);
         for( String erro: ASTNode.semanticErrorMsg){
             System.out.println(erro);    
         }
 
-        SymTabScopeNode sizeOfFields = ASTNode.mainScope;
-        SymTabScopeNode qsScope = sizeOfFields.getMethodScope("QS").getMethodScope("Sort");
-if (qsScope != null) {
-        
-    for (SymTabScopeNode childScope : qsScope.next.values()) {
-        System.out.println("Nome do escopo filho: " + childScope.getScopename());
-        // Se quiser mais detalhes, pode acessar outros métodos do childScope aqui
-    }
-} else {
-    System.out.println("Classe Sort não encontrada.");
-}
+        SymTabScopeNode mainScope = ASTNode.mainScope;
+        var frame = new MipsFrame();
+        IRTreeVisitor irTree = new IRTreeVisitor(mainScope, frame);
+        root.accept(irTree);
+
+
+
 	// SpringApplication.run(MijavaApplication.class, args);
        
 	}

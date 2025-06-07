@@ -78,10 +78,28 @@ public class SymTabScopeNode {
         return "null";
     }
 
-    public SymTabScopeNode getMethodScope(String nomeMetodo) {
+    public SymTabScopeNode getMethodScope(String nomeMetodo) {  
+        
         if (next != null && next.containsKey(nomeMetodo)) {
             return next.get(nomeMetodo);
         }
+        return null;
+    }
+
+    public SymTabScopeNode getMethodScopeRecursive(String nomeMetodo, SymTabScopeNode currScope) { 
+         
+         if (currScope.next!= null && currScope.next.containsKey(nomeMetodo)) {
+            return currScope.next.get(nomeMetodo);
+          }
+        
+        for(SymTabScopeNode childNode: currScope.next.values()){ 
+          System.out.println("o escopo é " + childNode.getScopename());          
+          SymTabScopeNode result = getMethodScopeRecursive(nomeMetodo, childNode);
+          if(result != null){
+            return result;
+          }
+        }
+        
         return null;
     }
 

@@ -13,12 +13,16 @@ import com.example.mijava.ast.ArrayAccessExpression;
 import com.example.mijava.ast.ArrayAssignStatement;
 import com.example.mijava.ast.ArrayLengthExpression;
 import com.example.mijava.ast.AssignStatement;
+import com.example.mijava.ast.BinaryExpression;
 import com.example.mijava.ast.BlockStatement;
+import com.example.mijava.ast.BooleanLiteralExpression;
 import com.example.mijava.ast.BooleanType;
+import com.example.mijava.ast.ClassDecl;
 import com.example.mijava.ast.ClassDeclExtends;
 import com.example.mijava.ast.ClassDeclSimple;
 import com.example.mijava.ast.FalseExpression;
 import com.example.mijava.ast.FormalList;
+import com.example.mijava.ast.Id;
 import com.example.mijava.ast.IdentifierExpression;
 import com.example.mijava.ast.IdentifierType;
 import com.example.mijava.ast.IfStatement;
@@ -38,6 +42,7 @@ import com.example.mijava.ast.Program;
 import com.example.mijava.ast.Sub;
 import com.example.mijava.ast.ThisExpression;
 import com.example.mijava.ast.TrueExpression;
+import com.example.mijava.ast.Type;
 import com.example.mijava.ast.VarDecl;
 import com.example.mijava.ast.WhileStatement;
 import com.example.mijava.irtree.BINOP;
@@ -58,6 +63,7 @@ import com.example.mijava.irtree.Stm;
 import com.example.mijava.irtree.TEMP;
 import com.example.mijava.mips.MipsFrame;
 import com.example.mijava.symbol.SymTabScopeNode;
+import com.example.mijava.symbol.SymbolEntry;
 import com.example.mijava.temp.Label;
 import com.example.mijava.visitor.ASTVisitor;
 
@@ -65,6 +71,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.var;
 import lombok.extern.log4j.Log4j2;
 
 
@@ -169,22 +176,22 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 		}
 
 		if (c.object instanceof IdentifierExpression idExp) {
-			if (currentMethodTable.getParameterTypes() getLocalsContext().get(idExp.getId()) instanceof IdentifierType idType) {
-				tmpClassSymbol = idType.getS();
-			} else if (currentMethodTable.getParamsContext().get(idExp.getId()) instanceof IdentifierType idType)
-				tmpClassSymbol = idType.getS();
-			else if (currentClassTable.getFieldsContext().get(idExp.getId()) instanceof IdentifierType idType) {
-				tmpClassSymbol = idType.getS();
+			SymbolEntry entry = currentMethodTable.getSymTab(idExp.getS());
+			if (entry == null && currentClassTable != null) {
+				entry = currentClassTable.getSymTab(idExp.getS());
 			}
-		}
+			if (entry != null) {
+				tmpClassSymbol = entry.getType();
+			}
+        }
 
 		if (c.object instanceof NewObjectExpression idNewObject) {
-			tmpClassTable = mainTable.getMap().get(idNewObject.getIdentifier().getS());
+			tmpClassTable = mainTable.getClassScope(idNewObject.getId().getS()); 
 		}
 		if (c.object instanceof ThisExpression) tmpClassTable = currentClassTable;
-		if (tmpClassTable != null) tmpClassSymbol = tmpClassTable  getClassName();
+		if (tmpClassTable != null) tmpClassSymbol = tmpClassTable.getScopename();
 
-		var label = new Label(tmpClassSymbol + "." + c.getMethod().getS());
+		var label = new Label(tmpClassSymbol + "." + c.getMethodName().getS());
 
 		var callExpr = CALL.builder()
 			.func(new NAME(label))
@@ -206,8 +213,15 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 	}
 
 	public Exp visit(NewObjectExpression n) {
-		currentClassTable = mainTable.getClassScope(n.getId().getS());
-		int sizeOfFields = mainTable.getClassScope(n.getId().getS())
+		SymTabScopeNode classScope = mainTable.getClassScope(n.getId().getS());	
+		currentClassTable = classScope;
+
+		int sizeOfFields = 0;
+		for(SymbolEntry entry: classScope.getSymTab().values()){
+			if(entry.getKind().equals("var")){
+				sizeOfFields ++;
+			}
+		}
 
 		var parametersList = new LinkedList<ExpAbstract>();
 		parametersList.add(
@@ -464,8 +478,10 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 	}
 
 	public Exp visit(AssignStatement a) {
-		var id = a.id.accept(this);
-		var value = a.expression.accept(this);
+		System.out.println("oba: " + a.id.toString());
+
+		var id = a.getId().accept(this);
+		var value = a.getExpression().accept(this);
 
 		var moveValue = MOVE.builder()
 			.dst(id.unEx())
@@ -522,15 +538,12 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 		
 		frame = frame.newFrame("main", escapeList);
 
-		var size = m.getStatement()
-		for (int i = 0; i < size; i++) {
-			stmBody = new SEQ(
-				stmBody,
-				new EXP(
-					m.getStatements().getStatements().get(i).accept(this).unEx()
-				)
-			);
+		
+		if(m.getStatement() != null){
+			var stmExp = m.getStatement().accept(this).unEx();
+			stmBody = new SEQ(stmBody, new EXP(stmExp));
 		}
+
 		stmList.add(stmBody);
 
 		frame.procEntryExit1(stmList);
@@ -573,9 +586,9 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 	}
 
 	public Exp visit(MethodDecl m) {
-
-		 SymTabScopeNode currentMethodTable = mainTable.getMethodScope(m.toString());
-
+		    
+		SymTabScopeNode currentMethodTable = mainTable.getMethodScopeRecursive(m.getMethodName().toString(), currentClassTable);
+     
 		Stm stmBody = new EXP(new CONST(0));
 		var escapeList = new ArrayList<Boolean>();
 		int sizeFormals = m.getParameters().size();
@@ -626,5 +639,35 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 
 	public void addExp(ExpAbstract exp) {
 		listExp.add(exp);
+	}
+
+
+	@Override
+	public Exp visit(ClassDecl classDecl) {
+		return null;
+	}
+
+
+	@Override
+	public Exp visit(Id id) {
+		return null;
+	}
+
+
+	@Override
+	public Exp visit(Type type) {
+		return null;
+	}
+
+
+	@Override
+	public Exp visit(BinaryExpression expression) {
+		return null;
+	}
+
+
+	@Override
+	public Exp visit(BooleanLiteralExpression expression) {
+		return null;
 	}
 }
