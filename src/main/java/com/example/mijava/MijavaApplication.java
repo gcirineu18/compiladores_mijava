@@ -11,8 +11,8 @@ import com.example.mijava.mips.MipsFrame;
 import com.example.mijava.symbol.SymTabScopeNode;
 import com.example.mijava.visitor.ASTBuilderVisitor;
 import com.example.mijava.visitor.IRTree.IRTreeVisitor;
+import com.example.mijava.visitor.IRTree.ProcFrag;
 
-import lombok.var;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -51,8 +51,28 @@ public class MijavaApplication {
         var frame = new MipsFrame();
         IRTreeVisitor irTree = new IRTreeVisitor(mainScope, frame);
         root.accept(irTree);
-        
 
+        // Imprimir a IRTree do método main (statement principal)
+        // Supondo que o fragmento inicial do visitor contém o corpo do método main
+        // var frag = irTree.getInitialFrag().getNext(); // Pula o frag inicial vazio
+        // if (frag instanceof ProcFrag procFrag) {
+        //     var stm = procFrag.getBody();
+        //     var printer = new com.example.mijava.irtree.Print(System.out);
+        //     printer.prStm(stm);
+        // }
+
+        // Imprimir todos os métodos (ProcFrag) gerados na IRTree
+        // var frag = irTree.getInitialFrag().getNext(); // Pula o frag inicial vazio
+        // var printer = new com.example.mijava.irtree.Print(System.out);
+        // while (frag != null) {
+        //     if (frag instanceof ProcFrag procFrag) {
+        //         System.out.println("\n--- Método: " + procFrag.getFrame().name + " ---");
+        //         printer.prStm(procFrag.getBody());
+        //     }
+        //     frag = frag.getNext();
+        // }
+
+        
 
 	// SpringApplication.run(MijavaApplication.class, args);
        

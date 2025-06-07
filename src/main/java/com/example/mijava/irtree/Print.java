@@ -135,14 +135,21 @@ public class Print {
   }
 
   void prExp(ExpAbstract e, int d) {
-        if (e instanceof BINOP) prExp((BINOP)e, d);
-   else if (e instanceof MEM) prExp((MEM)e, d);
-   else if (e instanceof TEMP) prExp((TEMP)e, d);
-   else if (e instanceof ESEQ) prExp((ESEQ)e, d);
-   else if (e instanceof NAME) prExp((NAME)e, d);
-   else if (e instanceof CONST) prExp((CONST)e, d);
-   else if (e instanceof CALL) prExp((CALL)e, d);
-   else throw new Error("Print.prExp");
+    if (e == null) {
+      System.out.println("[ERRO] Nó nulo em Print.prExp!");
+      throw new NullPointerException("Nó nulo em Print.prExp");
+    }
+    if (e instanceof BINOP) prExp((BINOP)e, d);
+    else if (e instanceof MEM) prExp((MEM)e, d);
+    else if (e instanceof TEMP) prExp((TEMP)e, d);
+    else if (e instanceof ESEQ) prExp((ESEQ)e, d);
+    else if (e instanceof NAME) prExp((NAME)e, d);
+    else if (e instanceof CONST) prExp((CONST)e, d);
+    else if (e instanceof CALL) prExp((CALL)e, d);
+    else {
+      System.out.println("Tipo inesperado em Print.prExp: " + e.getClass());
+      throw new Error("Print.prExp");
+    }
   }
 
   public void prStm(Stm s) {prStm(s,0); say("\n");}

@@ -368,13 +368,35 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 		var lheExpr = l.left.accept(this);
 		var rheExpr = l.right.accept(this);
 
-		var lessThanBinop = BINOP.builder()
-			.binop(BINOP.MINUS)
-			.left(lheExpr.unEx())
-			.right(rheExpr.unEx())
-			.build();
-		addExp(lessThanBinop);
-		return new Exp(lessThanBinop);
+		var r = frame.allocLocal(); // temporário para o resultado
+		var labelTrue = new Label();
+		var labelFalse = new Label();
+		var labelEnd = new Label();
+
+		// CJUMP para LT
+		var cjump = new CJUMP(CJUMP.LT, lheExpr.unEx(), rheExpr.unEx(), labelTrue, labelFalse);
+		// MOVE 1 se verdadeiro
+		var moveTrue = new MOVE(r.exp(new TEMP(frame.FP())), new CONST(1));
+		// MOVE 0 se falso
+		var moveFalse = new MOVE(r.exp(new TEMP(frame.FP())), new CONST(0));
+
+		// SEQ de comandos
+		var seq = new SEQ(
+			cjump,
+			new SEQ(
+				new SEQ(
+					new LABEL(labelTrue),
+					new SEQ(moveTrue, new JUMP(labelEnd))
+				),
+				new SEQ(
+					new LABEL(labelFalse),
+					new SEQ(moveFalse, new JUMP(labelEnd))
+				)
+			)
+		);
+		var eseq = new ESEQ(new SEQ(seq, new LABEL(labelEnd)), r.exp(new TEMP(frame.FP())));
+		addExp(eseq);
+		return new Exp(eseq);
 	}
 
 	public Exp visit(NewArrayExpression n) {
@@ -628,10 +650,12 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 	}
 
 	public Exp visit(VarDecl v) {
+		System.out.println("visitando exp var decl" + v.getClass().getSimpleName());
 		return null;
 	}
 
 	public Exp visit(FormalList f) {
+		System.out.println("visitando exp formallist" + f.getClass().getSimpleName());
 		frame.allocLocal();
 		return null;
 	}
@@ -643,17 +667,20 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 
 	@Override
 	public Exp visit(ClassDecl classDecl) {
+		System.out.println("visitando exp class decl" + classDecl.getClass().getSimpleName());
 		return null;
 	}
 
 	@Override
 	public Exp visit(Type type) {
+		System.out.println("visitando exp type" + type.getClass().getSimpleName());
 		return null;
 	}
 
 
 	@Override
 	public Exp visit(BinaryExpression expression) {
+		System.out.println("visitando exp binary" + expression.getClass().getSimpleName());
 		return null;
 	}
 
