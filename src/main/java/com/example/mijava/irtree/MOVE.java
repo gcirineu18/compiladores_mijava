@@ -5,9 +5,9 @@ import com.example.mijava.temp.Label;
 
 public class MOVE extends Stm {
 
-  public Exp dst, src;
+  public ExpAbstract dst, src;
 
-  public MOVE(Exp d, Exp s) {dst=d; src=s;}
+  public MOVE(ExpAbstract d, ExpAbstract s) {dst=d; src=s;}
   public ExpList kids() {
         if (dst instanceof MEM)
 	   return new ExpList(((MEM)dst).exp, new ExpList(src,null));

@@ -6,7 +6,7 @@ import com.example.mijava.frame.Access;
 import com.example.mijava.irtree.BINOP;
 import com.example.mijava.irtree.MEM;
 import com.example.mijava.irtree.CONST;
-import com.example.mijava.irtree.Exp;
+import com.example.mijava.irtree.ExpAbstract;
 
 public class InFrame extends Access {
   int offset;
@@ -15,7 +15,7 @@ public class InFrame extends Access {
     this.offset = o;
   }
 
-  public Exp exp(Exp fp) {
+  public ExpAbstract exp(ExpAbstract fp) {
     return new MEM(new BINOP(BINOP.PLUS, fp, new CONST(offset)));
   }
 

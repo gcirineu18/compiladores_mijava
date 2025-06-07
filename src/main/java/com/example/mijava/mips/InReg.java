@@ -3,7 +3,7 @@ package com.example.mijava.mips;
 import com.example.mijava.temp.Temp;
 import com.example.mijava.irtree.TEMP;
 import com.example.mijava.frame.Access;
-import com.example.mijava.irtree.Exp;
+import com.example.mijava.irtree.ExpAbstract;
 
 public class InReg extends Access {
     Temp temp;
@@ -12,7 +12,7 @@ public class InReg extends Access {
         this.temp = t;
     }
 
-    public Exp exp(Exp fp) {
+    public ExpAbstract exp(ExpAbstract fp) {
         return new TEMP(temp);
     }
 

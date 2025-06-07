@@ -2,7 +2,7 @@ package com.example.mijava.frame;
 
 // import com.example.mijava.assem.Instr;
 // import com.example.mijava.assem.InstrList;
-import com.example.mijava.irtree.Exp;
+import com.example.mijava.irtree.ExpAbstract;
 import com.example.mijava.irtree.Stm;
 import com.example.mijava.irtree.StmList;
 import com.example.mijava.temp.Label;
@@ -23,7 +23,7 @@ public abstract class Frame implements TempMap {
 
 	public abstract int wordSize();
 
-	public abstract Exp externalCall(String func, List<Exp> args);
+	public abstract ExpAbstract externalCall(String func, List<ExpAbstract> args);
 
 	public abstract Temp RV();
 

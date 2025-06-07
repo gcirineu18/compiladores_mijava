@@ -181,7 +181,7 @@ public class MipsFrame extends Frame {
 
     private static HashMap<String,Label> labels = new HashMap<String,Label>();
 
-    public Exp externalCall(String s, List<Exp> args) {
+    public ExpAbstract externalCall(String s, List<ExpAbstract> args) {
 
 	String func = s.intern();
 	Label l = labels.get(func);
@@ -193,7 +193,7 @@ public class MipsFrame extends Frame {
 
 	ExpList auxExpList = null;
 
-	for( Exp arg: args){
+	for( ExpAbstract arg: args){
 		auxExpList = new ExpList(arg, auxExpList);
 	}
 
@@ -319,7 +319,7 @@ public class MipsFrame extends Frame {
 	    return left;
 	return new SEQ(left, right);
     }
-    private static MOVE MOVE(Exp d, Exp s) {
+    private static MOVE MOVE(ExpAbstract d, ExpAbstract s) {
 	return new MOVE(d, s);
     }
     private static TEMP TEMP(Temp t) {

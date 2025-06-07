@@ -2,11 +2,11 @@ package com.example.mijava.irtree;
 import com.example.mijava.temp.Temp;
 import com.example.mijava.temp.Label;
 
-public class MEM extends Exp {
-  public Exp exp;
-  public MEM(Exp e) {exp=e;}
+public class MEM extends ExpAbstract {
+  public ExpAbstract exp;
+  public MEM(ExpAbstract e) {exp=e;}
   public ExpList kids() {return new ExpList(exp,null);}
-  public Exp build(ExpList kids) {
+  public ExpAbstract build(ExpList kids) {
     return new MEM(kids.head);
   }
 }
