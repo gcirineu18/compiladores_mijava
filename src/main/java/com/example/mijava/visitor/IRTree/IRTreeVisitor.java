@@ -145,7 +145,7 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 		return new Exp(constExpr);
 	}
 
-	public Exp visit(Identifier i) {
+	public Exp visit(Id i) {
 		var allocLocal = frame.allocLocal();
 		var tempReg = allocLocal.exp(new TEMP(frame.FP()));
 		addExp(tempReg);
@@ -478,7 +478,6 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 	}
 
 	public Exp visit(AssignStatement a) {
-		System.out.println("oba: " + a.id.toString());
 
 		var id = a.getId().accept(this);
 		var value = a.getExpression().accept(this);
@@ -646,13 +645,6 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 	public Exp visit(ClassDecl classDecl) {
 		return null;
 	}
-
-
-	@Override
-	public Exp visit(Id id) {
-		return null;
-	}
-
 
 	@Override
 	public Exp visit(Type type) {

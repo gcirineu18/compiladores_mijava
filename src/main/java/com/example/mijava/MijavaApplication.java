@@ -51,7 +51,7 @@ public class MijavaApplication {
         var frame = new MipsFrame();
         IRTreeVisitor irTree = new IRTreeVisitor(mainScope, frame);
         root.accept(irTree);
-
+        
 
 
 	// SpringApplication.run(MijavaApplication.class, args);
