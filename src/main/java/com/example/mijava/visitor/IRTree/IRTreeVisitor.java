@@ -71,7 +71,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.var;
 import lombok.extern.log4j.Log4j2;
 
 
@@ -667,20 +666,17 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 
 	@Override
 	public Exp visit(ClassDecl classDecl) {
-		System.out.println("visitando exp class decl" + classDecl.getClass().getSimpleName());
 		return null;
 	}
 
 	@Override
 	public Exp visit(Type type) {
-		System.out.println("visitando exp type" + type.getClass().getSimpleName());
 		return null;
 	}
 
 
 	@Override
 	public Exp visit(BinaryExpression expression) {
-		System.out.println("visitando exp binary" + expression.getClass().getSimpleName());
 		return null;
 	}
 

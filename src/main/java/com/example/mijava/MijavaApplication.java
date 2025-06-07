@@ -72,7 +72,15 @@ public class MijavaApplication {
         //     frag = frag.getNext();
         // }
 
-        
+        // Para imprimir todos os métodos (ProcFrag) gerados na IRTree:
+        var frag = irTree.getInitialFrag().getNext(); // Pula o frag inicial vazio
+        while (frag != null) {
+        if (frag instanceof ProcFrag procFrag) {
+                System.out.println("\n--- Método: " + procFrag.getFrame().name + " ---");
+                System.out.println(procFrag.getBody()); // Usa o toString() recursivo!
+        }
+        frag = frag.getNext();
+        }
 
 	// SpringApplication.run(MijavaApplication.class, args);
        
