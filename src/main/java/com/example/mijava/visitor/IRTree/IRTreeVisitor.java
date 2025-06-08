@@ -649,12 +649,10 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 	}
 
 	public Exp visit(VarDecl v) {
-		System.out.println("visitando exp var decl" + v.getClass().getSimpleName());
 		return null;
 	}
 
 	public Exp visit(FormalList f) {
-		System.out.println("visitando exp formallist" + f.getClass().getSimpleName());
 		frame.allocLocal();
 		return null;
 	}
