@@ -175,13 +175,9 @@ public class IRTreeVisitor implements ASTVisitor<Exp>{
 		}
 
 		if (c.object instanceof IdentifierExpression idExp) {
-			SymbolEntry entry = currentMethodTable.getSymTab(idExp.getS());
-			if (entry == null && currentClassTable != null) {
-				entry = currentClassTable.getSymTab(idExp.getS());
-			}
-			if (entry != null) {
-				tmpClassSymbol = entry.getType();
-			}
+            
+			tmpClassSymbol = idExp.getS();
+			
         }
 
 		if (c.object instanceof NewObjectExpression idNewObject) {
