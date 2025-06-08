@@ -31,7 +31,7 @@ public class MijavaApplication {
 
           var mijavaCompiler =  new MijavaCompile();
           
-          mijavaCompiler.compile("src/main/resources/entrega1_tests/LinearSearch.java");
+          mijavaCompiler.compile("src/main/resources/entrega1_tests/BubbleSort.java");
        
 	}
 
