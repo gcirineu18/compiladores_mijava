@@ -25,7 +25,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class MijavaApplication {
 
 	public static void main(String[] args) throws IOException {
-        CharStream input = CharStreams.fromFileName("src/main/resources/entrega1_tests/Factorial.java");
+        CharStream input = CharStreams.fromFileName("src/main/resources/entrega1_tests/BinarySearch.java");
         MijavaLexer lexer = new MijavaLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         MijavaParser parser = new MijavaParser(tokens);
