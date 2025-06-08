@@ -3,38 +3,38 @@ package com.example.mijava.ast;
 import com.example.mijava.symbol.SymTabScopeNode;
 import com.example.mijava.visitor.ASTVisitor;
 
-public abstract class Expression extends ASTNode{
+public abstract class Expression extends ASTNode {
 
   protected int line;
-  protected int charpos; 
+  protected int charpos;
   protected String name;
-  
-  public Expression(){
-     this.name = "#";
+
+  public Expression() {
+    this.name = "#";
   }
 
-  Expression(int line, int charpos){
+  Expression(int line, int charpos) {
     this.line = line;
     this.charpos = charpos;
     this.name = "#";
 
   }
 
-  public String printNode(){
+  public String printNode() {
     return "";
   }
 
-  public String getTypeErr( int errorNumber, String msg, String require, String get){
+  public String getTypeErr(int errorNumber, String msg, String require, String get) {
     return "Erro Semântico: Linha " + line + ": " + charpos + " " + msg +
-            "\n\tRequire: " +  require + ", Get: " + get;
+        "\n\tRequire: " + require + ", Get: " + get;
   }
 
-  public void createSymTab(SymTabScopeNode escopoAtual){}
-
-  public String typeCheck(SymTabScopeNode escopoAtual){           
-      return "Unknow Type";
+  public void createSymTab(SymTabScopeNode escopoAtual) {
   }
 
-  public abstract <T> T accept(ASTVisitor<T> v); 
+  public String typeCheck(SymTabScopeNode escopoAtual) {
+    return "Unknow Type";
+  }
+
+  public abstract <T> T accept(ASTVisitor<T> v);
 }
-
