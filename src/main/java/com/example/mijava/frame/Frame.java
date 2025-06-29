@@ -1,5 +1,7 @@
 package com.example.mijava.frame;
 
+import com.example.mijava.asem.Instr;
+import com.example.mijava.asem.InstrList;
 // import com.example.mijava.assem.Instr;
 // import com.example.mijava.assem.InstrList;
 import com.example.mijava.irtree.ExpAbstract;
@@ -35,17 +37,17 @@ public abstract class Frame implements TempMap {
 
 	public abstract String tempMap(Temp temp);
 
-	// public abstract InstrList codegen(StmList stms);
+	public abstract InstrList codegen(StmList stms);
 
 	public abstract void procEntryExit1(List<Stm> body);
 	
-	// public abstract void procEntryExit2(List<Assem.Instr> body);
+	public abstract void procEntryExit2(List<Instr> body);
 
-  // public abstract void procEntryExit3(List<Assem.Instr> body);
+    public abstract void procEntryExit3(List<Instr> body);
 
 	public abstract Temp[] registers();
 
-	// public abstract void spill(InstrList insns, Temp[] spills);
+    public abstract void spill(List<Instr> insns, Temp[] spills);
 
 	public abstract String programTail();
 

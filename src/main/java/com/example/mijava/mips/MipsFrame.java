@@ -9,11 +9,17 @@ import java.util.LinkedList;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.Arrays;
+
+import com.example.mijava.asem.AssemOPER;
+import com.example.mijava.asem.Instr;
+import com.example.mijava.asem.InstrList;
 import com.example.mijava.frame.Access;
 import com.example.mijava.frame.Frame;
 import com.example.mijava.irtree.*;
 import com.example.mijava.temp.Label;
 import com.example.mijava.temp.Temp;
+import com.example.mijava.utils.Convert;
+import com.example.mijava.visitor.IRTree.Exp;
 import com.example.mijava.mips.InReg;
 
 
@@ -192,7 +198,6 @@ public class MipsFrame extends Frame {
 		auxExpList = new ExpList(arg, auxExpList);
 	}
 
-
 	return new CALL(new NAME(l), auxExpList);
     }
 
@@ -274,13 +279,20 @@ public class MipsFrame extends Frame {
 
     int maxArgOffset = 0;
 
-    // public List<Assem.Instr> codegen(List<Stm> stms) {
-	// List<Assem.Instr> insns = new java.util.LinkedList<Assem.Instr>();
-	// Codegen cg = new Codegen(this, insns.listIterator());
-	// for (java.util.Iterator<Stm> s = stms.iterator(); s.hasNext(); )
-	//     s.next().accept(cg);
-	// return insns;
-    // }
+	private MipsCodegen mipsCodegen;
+
+	public InstrList codegen(StmList stms) {
+		InstrList instrList = null;
+		InstrList instr;
+		for (StmList stmsIter = stms; stmsIter != null; stmsIter = stmsIter.tail) {
+			instr = mipsCodegen.codegen(stmsIter.head);
+			while (instr != null) {
+				instrList = new InstrList(instr.head, instrList);
+				instr = instr.tail;
+			}
+		}
+		return instrList;
+	}
 
     private static <R> void addAll(java.util.Collection<R> c, R[] a) {
 	for (int i = 0; i < a.length; i++)
@@ -351,28 +363,28 @@ public class MipsFrame extends Frame {
     }
 
     
-	// private static Assem.Instr OPER(String a, Temp[] d, Temp[] s) {
-	// return new Assem.OPER(a, d, s, null);
-    // }
+	private static Instr OPER(String a, Temp[] d, Temp[] s) {	
+	  return new AssemOPER(a, Convert.ArrayToTempList(d), Convert.ArrayToTempList(d), null);
+    }
 
-    // public void procEntryExit2(List<Assem.Instr> body) {
-	// body.add(OPER("#\treturn", null, returnSink));
-    // }
+    public void procEntryExit2(List<Instr> body) {
+	body.add(OPER("#\treturn", null, returnSink));
+    }
 
-    // public void procEntryExit3(List<Assem.Instr> body) {
-	// int frameSize = maxArgOffset - offset;
-	// ListIterator<Assem.Instr> cursor = body.listIterator();
-	// cursor.add(OPER("\t.text", null, null));
-	// cursor.add(OPER(name + ":", null, null));
-	// cursor.add(OPER(name + "_framesize=" + frameSize, null, null));
-	// if (frameSize != 0) {
-	//     cursor.add(OPER("\tsubu $sp " + name + "_framesize",
-	// 		    new Temp[]{SP}, new Temp[]{SP}));
-	//     body.add(OPER("\taddu $sp " + name + "_framesize",
-	// 		  new Temp[]{SP}, new Temp[]{SP}));
-	// }
-	// body.add(OPER("\tj $ra", null, new Temp[]{RA}));
-    // }
+    public void procEntryExit3(List<Instr> body) {
+	int frameSize = maxArgOffset - offset;
+	ListIterator<Instr> cursor = body.listIterator();
+	cursor.add(OPER("\t.text", null, null));
+	cursor.add(OPER(name + ":", null, null));
+	cursor.add(OPER(name + "_framesize=" + frameSize, null, null));
+	if (frameSize != 0) {
+	    cursor.add(OPER("\tsubu $sp " + name + "_framesize",
+			    new Temp[]{SP}, new Temp[]{SP}));
+	    body.add(OPER("\taddu $sp " + name + "_framesize",
+			  new Temp[]{SP}, new Temp[]{SP}));
+	}
+	body.add(OPER("\tj $ra", null, new Temp[]{RA}));
+    }
 
     private static Temp[] registers = {};
     {
@@ -389,47 +401,50 @@ public class MipsFrame extends Frame {
 
         private static boolean spilling = true ;
     // set spilling to true when the spill method is implemented
-    // public void spill(List<Assem.Instr> insns, Temp[] spills) {
-	// if (spills != null) {
-	//     if (!spilling) {
-	// 	for (int s = 0; s < spills.length; s++)
-	// 	    System.err.println("Need to spill " + spills[s]);
-	// 	throw new Error("Spilling unimplemented");
-	//     }
-    //         else for (int s = 0; s < spills.length; s++) {
-	// 	Exp exp = allocLocal(true).exp(TEMP(FP));
-	// 	for (ListIterator<Assem.Instr> i = insns.listIterator();
-	// 	     i.hasNext(); ) {
-	// 	    Assem.Instr insn = i.next();
-	// 	    Temp[] use = insn.use;
-	// 	    if (use != null)
-	// 		for (int u = 0; u < use.length; u++) {
-	// 		    if (use[u] == spills[s]) {
-	// 			Temp t = new Temp();
-	// 			t.spillTemp = true;
-	// 			Stm stm = MOVE(TEMP(t), exp);
-	// 			i.previous();
-	// 			stm.accept(new Codegen(this, i));
-	// 			if (insn != i.next())
-	// 			    throw new Error();
-	// 			insn.replaceUse(spills[s], t);
-	// 			break;
-	// 		    }
-	// 		}
-	// 	    Temp[] def = insn.def;
-	// 	    if (def != null)
-	// 		for (int d = 0; d < def.length; d++) {
-	// 		    if (def[d] == spills[s]) {
-	// 			Temp t = new Temp();
-	// 			t.spillTemp = true;
-	// 			insn.replaceDef(spills[s], t);
-	// 			Stm stm = MOVE(exp, TEMP(t));
-	// 			stm.accept(new Codegen(this, i));
-	// 			break;
-	// 		    }
-	// 		}
-	// 	}
-	//     }
-    //     }
-    // }
+ public void spill(List<Instr> insns, Temp[] spills) {
+	if (spills != null) {
+	    if (!spilling) {
+		for (int s = 0; s < spills.length; s++)
+		    System.err.println("Need to spill " + spills[s]);
+		throw new Error("Spilling unimplemented");
+	    }
+        else for (int s = 0; s < spills.length; s++) {
+
+			ExpAbstract exp = allocLocal().exp(TEMP(FP));
+
+			for (ListIterator<Instr> i = insns.listIterator();
+				i.hasNext(); ) {
+				Instr insn = i.next();
+				Temp[] use = Convert.TempListToArray(insn.use());
+				if (use != null)
+				for (int u = 0; u < use.length; u++) {
+					if (use[u] == spills[s]) {
+					Temp t = new Temp();
+					//t.spillTemp = true;
+					Stm stm = MOVE(TEMP(t), exp);
+					i.previous();
+					//stm.accept(new Codegen(this, i));
+					if (insn != i.next())
+						throw new Error();
+					//insn.replaceUse(spills[s], t);
+					break;
+					}
+				}
+				Temp[] def =  Convert.TempListToArray(insn.def());
+				if (def != null)
+				for (int d = 0; d < def.length; d++) {
+					if (def[d] == spills[s]) {
+					Temp t = new Temp();
+					//t.spillTemp = true;
+					//insn.replaceDef(spills[s], t);
+					Stm stm = MOVE(exp, TEMP(t));
+					//stm.accept(new Codegen(this, i));
+					break;
+					}
+				}
+			}
+			}
+			}
+		}
+
 }
