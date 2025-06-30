@@ -3,6 +3,10 @@ package com.example.mijava.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.mijava.asem.Instr;
+import com.example.mijava.asem.InstrList;
+import com.example.mijava.irtree.Stm;
+import com.example.mijava.irtree.StmList;
 import com.example.mijava.temp.Temp;
 import com.example.mijava.temp.TempList;
 
@@ -42,5 +46,29 @@ public class Convert {
         }
 
         return list;
+    }
+
+       public static List<Instr> InstrListToArray(InstrList ht) {
+        ArrayList<Instr> r = new ArrayList<Instr>();
+
+        InstrList h = ht;
+        while (h != null) {
+            r.add(h.head);
+            h = h.tail;
+        }
+
+        return r;
+    }
+
+        public static List<Stm> StmListToArray (StmList ht) {
+        ArrayList<Stm> r = new ArrayList<Stm>();
+
+        StmList h = ht;
+        while (h != null) {
+            r.add(h.head);
+            h = h.tail;
+        }
+
+        return r;
     }
 }

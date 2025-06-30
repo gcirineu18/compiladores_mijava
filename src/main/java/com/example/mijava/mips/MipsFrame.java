@@ -25,7 +25,7 @@ import com.example.mijava.mips.InReg;
 
 import java.util.*;
 
-
+@Data
 public class MipsFrame extends Frame {
 
 	 //Mini Java Library will be appended to end of 
@@ -281,18 +281,13 @@ public class MipsFrame extends Frame {
 
 	private MipsCodegen mipsCodegen;
 
-	public InstrList codegen(StmList stms) {
-		InstrList instrList = null;
-		InstrList instr;
-		for (StmList stmsIter = stms; stmsIter != null; stmsIter = stmsIter.tail) {
-			instr = mipsCodegen.codegen(stmsIter.head);
-			while (instr != null) {
-				instrList = new InstrList(instr.head, instrList);
-				instr = instr.tail;
-			}
-		}
-		return instrList;
+	public  List<Instr> codegen(List<Stm> stms) {
+
+		Codegen c = new Codegen(this);
+		return  Convert.InstrListToArray(c.codegen(stms));
+		
 	}
+
 
     private static <R> void addAll(java.util.Collection<R> c, R[] a) {
 	for (int i = 0; i < a.length; i++)

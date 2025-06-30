@@ -37,7 +37,7 @@ public abstract class Frame implements TempMap {
 
 	public abstract String tempMap(Temp temp);
 
-	public abstract InstrList codegen(StmList stms);
+	public abstract List<Instr> codegen(List<Stm> stms);
 
 	public abstract void procEntryExit1(List<Stm> body);
 	
