@@ -4,7 +4,7 @@ import com.example.mijava.symbol.SymTabScopeNode;
 import com.example.mijava.visitor.ASTVisitor;
 
 public class NewArrayExpression extends Expression {
-    private Expression e;
+    public Expression e;
 
 		NewArrayExpression(int line, int column){
 			super(line,column);

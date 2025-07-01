@@ -3,6 +3,11 @@ package com.example.mijava.ast;
 import com.example.mijava.symbol.SymTabScopeNode;
 import com.example.mijava.visitor.ASTVisitor;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class IdentifierExpression extends Expression{
 
   String s;

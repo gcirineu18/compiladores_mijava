@@ -6,6 +6,11 @@ import com.example.mijava.symbol.SymTabScopeNode;
 import com.example.mijava.symbol.SymbolEntry;
 import com.example.mijava.visitor.ASTVisitor;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter 
 public class ClassDeclExtends extends ClassDecl {
   public Id id2;
   public List<VarDecl> varDeclList;

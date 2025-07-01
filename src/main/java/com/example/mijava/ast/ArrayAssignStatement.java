@@ -3,6 +3,11 @@ package com.example.mijava.ast;
 import com.example.mijava.symbol.SymTabScopeNode;
 import com.example.mijava.visitor.ASTVisitor;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class ArrayAssignStatement extends Statement {
   public Id i;
   public Expression e1, e2;

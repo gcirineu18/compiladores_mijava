@@ -3,10 +3,16 @@ package com.example.mijava.ast;
 import com.example.mijava.symbol.SymTabScopeNode;
 import com.example.mijava.visitor.ASTVisitor;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter 
 public class IntegerLiteralExpression extends Expression {
     public int value;
 
-    public IntegerLiteralExpression(int value) {
+    public IntegerLiteralExpression(int value, int line, int charpos) {
+        super(line, charpos);
         this.value = value;
     }
 

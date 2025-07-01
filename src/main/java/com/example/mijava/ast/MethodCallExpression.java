@@ -3,9 +3,14 @@ import com.example.mijava.symbol.SymTabScopeNode;
 import com.example.mijava.symbol.SymbolEntry;
 import com.example.mijava.visitor.ASTVisitor;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.HashMap;
 import java.util.List;
 
+@Getter
+@Setter
 public class MethodCallExpression extends Expression {
     public Expression object;
     public Id methodName;
