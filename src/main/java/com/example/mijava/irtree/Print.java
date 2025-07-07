@@ -8,7 +8,7 @@ import com.example.mijava.irtree.MOVE;
 public class Print {
 
   java.io.PrintStream out;
-  TempMap tmap;
+  public TempMap tmap;
 
   public Print(java.io.PrintStream o, TempMap t) {out=o; tmap=t;}
 

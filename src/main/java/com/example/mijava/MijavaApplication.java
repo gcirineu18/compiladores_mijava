@@ -13,8 +13,6 @@ import com.example.mijava.visitor.ASTBuilderVisitor;
 import com.example.mijava.visitor.IRTree.IRTreeVisitor;
 import com.example.mijava.visitor.IRTree.ProcFrag;
 
-import lombok.var;
-
 import com.example.mijava.canon.*;
 import com.example.mijava.mijava.MijavaCompile;
 
@@ -31,7 +29,7 @@ public class MijavaApplication {
 
           var mijavaCompiler =  new MijavaCompile();
           
-          mijavaCompiler.compile("src/main/resources/entrega1_tests/BubbleSort.java");
+          mijavaCompiler.compile("src/main/resources/entrega1_tests/QuickSort.java");
        
 	}
 
