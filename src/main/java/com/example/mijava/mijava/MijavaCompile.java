@@ -10,6 +10,7 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
 
+import com.example.mijava.FlowGraph.AssemFlowGraph;
 import com.example.mijava.antlr.MijavaLexer;
 import com.example.mijava.antlr.MijavaParser;
 import com.example.mijava.asem.Instr;
@@ -22,6 +23,8 @@ import com.example.mijava.irtree.Print;
 import com.example.mijava.irtree.StmList;
 import com.example.mijava.mips.Codegen;
 import com.example.mijava.mips.MipsFrame;
+import com.example.mijava.regAlloc.InterferenceGraph;
+import com.example.mijava.regAlloc.Liveness;
 import com.example.mijava.symbol.SymTabScopeNode;
 import com.example.mijava.temp.CombineMap;
 import com.example.mijava.temp.DefaultMap;
@@ -42,9 +45,7 @@ public class MijavaCompile {
 
       mainScope = buildAST(tree);
 
-       buildIRTree();
-
-      //instructionSelection(traceSchedule);
+      buildIRTree();
 
     }
 
@@ -106,7 +107,7 @@ public class MijavaCompile {
         // Para percorrer todos os fragmentos e aplicar a canonização em cada um
         var currentFrag = irTree.getInitialFrag().getNext();
         System.out.println("\n>> Intermediate Canonical Code <<");
-
+        List<Instr> instrucoes;
         while (currentFrag != null) {
             if (currentFrag instanceof ProcFrag procFrag) {
                 System.out.println("\n--- Método: " + procFrag.getFrame().name + " ---");
@@ -115,27 +116,47 @@ public class MijavaCompile {
 
                 var canonIRTree = new TraceSchedule(new BasicBlocks(Canon.linearize(procFrag.getBody())));
 
-                for (var i = canonIRTree.stms; i != null; i = i.tail) {
-                    System.out.println(i.head);
-                }
+                // for (var i = canonIRTree.stms; i != null; i = i.tail) {
+                //     System.out.println(i.head);
+                // }
               
-              instructionSelection(procFrag, h);
+              instrucoes =  instructionSelection(procFrag, h);
+              registerAllocation(instrucoes);
+
             }
             currentFrag = currentFrag.getNext();
         }
     }
 
-     private void instructionSelection( ProcFrag procFrag, Print h){
+     private List<Instr> instructionSelection( ProcFrag procFrag, Print h){
         StmList statements = Canon.linearize(procFrag.getBody());  
         BasicBlocks b = new BasicBlocks(statements);
         StmList t = (new TraceSchedule(b)).stms; 
         List<Instr> instrucoes = procFrag.getFrame().codegen(Convert.StmListToArray(t));
 
-                System.out.println("\u005cnInstrucoes:\u005cn");
+        System.out.println("\u005cnInstrucoes:\u005cn");
         for (int j = 0; j < instrucoes.size(); ++j) {
-            System.out.println(instrucoes.get(j).format(h.tmap));
+          System.out.println(instrucoes.get(j).format(h.tmap));
         }
 
+        return instrucoes;
+
+    }
+
+
+    private void registerAllocation(List<Instr> instrucoes){
+         System.out.println("\u005cn* GRAFO DE FLUXO: ");
+         AssemFlowGraph graph = new AssemFlowGraph(Convert.ArrayToInstrList(instrucoes));
+         graph.print();
+
+          System.out.println("An\ufffdlise de Longevidade: ");
+                                Liveness liveness = new Liveness(graph);
+                                liveness.print();
+
+                                System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                                System.out.println("Grafo de Interfer\ufffdncia: ");
+                                InterferenceGraph inGraph = new InterferenceGraph(liveness);
+                                inGraph.print();
     }
 
     

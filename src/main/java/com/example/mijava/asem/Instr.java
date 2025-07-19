@@ -10,6 +10,8 @@ public abstract class Instr {
     
     public String assem;
 
+	public LabelList jumps;
+
     public abstract TempList use();
 
     public abstract TempList def();

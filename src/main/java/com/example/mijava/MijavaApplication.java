@@ -29,7 +29,7 @@ public class MijavaApplication {
 
           var mijavaCompiler =  new MijavaCompile();
           
-          mijavaCompiler.compile("src/main/resources/entrega1_tests/QuickSort.java");
+          mijavaCompiler.compile("src/main/resources/entrega1_tests/Factorial.java");
        
 	}
 

@@ -60,7 +60,7 @@ public class Convert {
         return r;
     }
 
-        public static List<Stm> StmListToArray (StmList ht) {
+    public static List<Stm> StmListToArray (StmList ht) {
         ArrayList<Stm> r = new ArrayList<Stm>();
 
         StmList h = ht;
@@ -71,4 +71,15 @@ public class Convert {
 
         return r;
     }
+    
+     public static InstrList ArrayToInstrList(List<Instr> array) {
+        InstrList instrList = null;
+
+        for (int i = array.size()-1; i >= 0; --i) {
+            instrList = new InstrList(array.get(i), instrList);
+        }
+
+        return instrList;
+    }
+
 }
