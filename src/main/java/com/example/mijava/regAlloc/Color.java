@@ -1,6 +1,7 @@
 package com.example.mijava.regAlloc;
 
 import java.util.Hashtable;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Stack;
 
@@ -45,22 +46,21 @@ public class Color implements TempMap {
             Temp t = ig.gtemp(n);
             if (t != null) {
                 initial_nodes.add(n);
+
                 if (initial != null && initial.tempMap(t) != null) {
-                    System.out.println("pré-colorido: " + t);
+                    System.out.println("Nó pre colorido: " + n);
                     precolored.add(n);
                 }
             }
         }
         
-        // Build initial simplify worklist
         buildWorklist(initial_nodes, precolored, simplifyWorklist, K);
         
-        // Simplify phase
         while (!simplifyWorklist.isEmpty()) {
             Node n = simplifyWorklist.pop();
             selectStack.push(n);
             
-            // Remove node and update degrees of neighbors
+            // Remove o nó e atualiza o número de vizinhos
             for (com.example.mijava.utils.List<Node> adj = n.adj(); adj != null; adj = adj.tail) {
                 Node m = adj.head;
                 if (initial_nodes.contains(m) && !precolored.contains(m)) {
@@ -70,8 +70,9 @@ public class Color implements TempMap {
             initial_nodes.remove(n);
         }
         
-        // If there are still unprocessed nodes, they are potential spills
-        java.util.List<Temp> spills = new java.util.ArrayList<>();
+        // Pode haver casos em que o spill, é necessário...
+
+        java.util.List<Temp> spills = new ArrayList<>();
         for (Node n : initial_nodes) {
             if (!precolored.contains(n)) {
                 Temp t = ig.gtemp(n);
@@ -86,19 +87,17 @@ public class Color implements TempMap {
             spillList = listFromJavaList(spills);
         }
         
-        // Select phase - assign colors
+        // Atribuindo as cores
         while (!selectStack.isEmpty()) {
             Node n = selectStack.pop();
             Temp t = ig.gtemp(n);
             if (t == null) continue;
             
-            // Check if already precolored
             if (initial != null && initial.tempMap(t) != null) {
                 allocation.put(t, initial.tempMap(t));
                 continue;
             }
-            
-            // Find forbidden colors
+
             HashSet<String> forbidden = new HashSet<>();
             for (com.example.mijava.utils.List<Node> adj = n.adj(); adj != null; adj = adj.tail) {
                 Temp adjTemp = ig.gtemp(adj.head);
@@ -110,11 +109,11 @@ public class Color implements TempMap {
                 }
             }
             
-            // Find available color
+            // Procurando por cor disponível
             String chosenColor = null;
             for (int  r = 0 ; r <  registers.length; r ++) {
 
-                String regName = registers[r].toString();
+               String regName = initial.tempMap(registers[r]);
                 if (!forbidden.contains(regName)) {
                     chosenColor = regName;
                     break;
@@ -125,14 +124,13 @@ public class Color implements TempMap {
             if (chosenColor != null) {
                 allocation.put(t, chosenColor);
             }
-            // If no color available, it remains a spill
         }
     }
     
     private void buildWorklist(HashSet<Node> nodes, HashSet<Node> precolored, 
                               Stack<Node> simplifyWorklist, int K) {
         for (Node n : nodes) {
-            if (!precolored.contains(n) && degree(n, nodes) < K) {
+            if ( !precolored.contains(n) && degree(n, nodes) < K) {
                 simplifyWorklist.push(n);
             }
         }
@@ -141,7 +139,7 @@ public class Color implements TempMap {
     private void decrementDegree(Node n, HashSet<Node> nodes, HashSet<Node> precolored,
                                 Stack<Node> simplifyWorklist, int K) {
         if (degree(n, nodes) == K) {
-            // Node n just became low-degree
+
             if (!precolored.contains(n)) {
                 simplifyWorklist.push(n);
             }

@@ -3,6 +3,7 @@ package com.example.mijava.mijava;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -168,7 +169,7 @@ public class MijavaCompile {
 
         System.out.println("\n[Resultado da Alocação de Registradores:]");
         
-        Set<Temp> printed = new java.util.HashSet<>();
+        Set<Temp> printed = new HashSet<>();
 
         for (com.example.mijava.utils.List<Node> nodes = inGraph.nodes(); nodes != null; nodes = nodes.tail) {
 
@@ -177,7 +178,7 @@ public class MijavaCompile {
             if (t != null && !printed.contains(t)) {
 
                 String reg = regAlloc.tempMap(t);
-                
+
                 System.out.println(t + " -> " + (reg != null ? reg : "[não alocado]"));
                 printed.add(t);
             }
