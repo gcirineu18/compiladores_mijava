@@ -153,20 +153,20 @@ public class Liveness {
 	}
 
 	public void print() {
-		for(List<Node> nodes = g.nodes(); nodes != null ; nodes = nodes.tail){
-			System.out.println();
-			System.out.println("No Instr.:  "+ ((AssemFlowGraph)g).instr(nodes.head).assem);
-			System.out.print("IN:");
-			for(TempList in2 = in.get(nodes.head.mykey); in2 != null; in2 = (TempList) in2.tail){
-				if(in2.head != null)System.out.print(in2.head.toString()+ " ");
-			}
-			System.out.println();
-			System.out.print("OUT:");		
-			for(TempList in2 = out.get(nodes.head.mykey); in2 != null; in2 = (TempList) in2.tail){
-				if(in2.head != null)System.out.print(in2.head.toString()+ " ");
-			}
+		// for(List<Node> nodes = g.nodes(); nodes != null ; nodes = nodes.tail){
+		// 	System.out.println();
+		// 	System.out.println("No Instr.:  "+ ((AssemFlowGraph)g).instr(nodes.head).assem);
+		// 	System.out.print("IN:");
+		// 	for(TempList in2 = in.get(nodes.head.mykey); in2 != null; in2 = (TempList) in2.tail){
+		// 		if(in2.head != null)System.out.print(in2.head.toString()+ " ");
+		// 	}
+		// 	System.out.println();
+		// 	System.out.print("OUT:");		
+		// 	for(TempList in2 = out.get(nodes.head.mykey); in2 != null; in2 = (TempList) in2.tail){
+		// 		if(in2.head != null)System.out.print(in2.head.toString()+ " ");
+		// 	}
 			
-			System.out.println();
-		}
+		// 	System.out.println();
+		// }
 	}
 }

@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -19,15 +20,18 @@ import com.example.mijava.ast.ASTNode;
 import com.example.mijava.canon.BasicBlocks;
 import com.example.mijava.canon.Canon;
 import com.example.mijava.canon.TraceSchedule;
+import com.example.mijava.graph.Node;
 import com.example.mijava.irtree.Print;
 import com.example.mijava.irtree.StmList;
 import com.example.mijava.mips.Codegen;
 import com.example.mijava.mips.MipsFrame;
 import com.example.mijava.regAlloc.InterferenceGraph;
 import com.example.mijava.regAlloc.Liveness;
+import com.example.mijava.regAlloc.RegAlloc;
 import com.example.mijava.symbol.SymTabScopeNode;
 import com.example.mijava.temp.CombineMap;
 import com.example.mijava.temp.DefaultMap;
+import com.example.mijava.temp.Temp;
 import com.example.mijava.utils.Convert;
 import com.example.mijava.visitor.ASTBuilderVisitor;
 import com.example.mijava.visitor.IRTree.IRTreeVisitor;
@@ -145,18 +149,39 @@ public class MijavaCompile {
 
 
     private void registerAllocation(List<Instr> instrucoes){
-         System.out.println("\u005cn* GRAFO DE FLUXO: ");
-         AssemFlowGraph graph = new AssemFlowGraph(Convert.ArrayToInstrList(instrucoes));
-         graph.print();
+        System.out.println("\n* GRAFO DE FLUXO: ");
+        AssemFlowGraph graph = new AssemFlowGraph(Convert.ArrayToInstrList(instrucoes));
+       // graph.print();
 
-          System.out.println("An\ufffdlise de Longevidade: ");
-                                Liveness liveness = new Liveness(graph);
-                                liveness.print();
+        System.out.println("Análise de Longevidade: ");
+        Liveness liveness = new Liveness(graph);
+        liveness.print();
 
-                                System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-                                System.out.println("Grafo de Interfer\ufffdncia: ");
-                                InterferenceGraph inGraph = new InterferenceGraph(liveness);
-                                inGraph.print();
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        System.out.println("Grafo de Interferência: ");
+        InterferenceGraph inGraph = new InterferenceGraph(liveness);
+        inGraph.print();
+
+        System.out.println("\n--- Alocação de Registradores ---");
+
+        RegAlloc regAlloc = new RegAlloc(frame, Convert.ArrayToInstrList(instrucoes), inGraph);
+
+        System.out.println("\n[Resultado da Alocação de Registradores:]");
+        
+        Set<Temp> printed = new java.util.HashSet<>();
+
+        for (com.example.mijava.utils.List<Node> nodes = inGraph.nodes(); nodes != null; nodes = nodes.tail) {
+
+            Temp t = inGraph.gtemp(nodes.head);
+
+            if (t != null && !printed.contains(t)) {
+
+                String reg = regAlloc.tempMap(t);
+                
+                System.out.println(t + " -> " + (reg != null ? reg : "[não alocado]"));
+                printed.add(t);
+            }
+        }
     }
 
     
