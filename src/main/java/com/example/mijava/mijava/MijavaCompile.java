@@ -110,7 +110,7 @@ public class MijavaCompile {
     private void printCanonicalTree(IRTreeVisitor irTree) {
         // Para percorrer todos os fragmentos e aplicar a canonização em cada um
         var currentFrag = irTree.getInitialFrag().getNext();
-        System.out.println("\n>> Intermediate Canonical Code <<");
+        //System.out.println("\n>> Intermediate Canonical Code <<");
         List<Instr> instrucoes;
         while (currentFrag != null) {
             if (currentFrag instanceof ProcFrag procFrag) {
@@ -138,9 +138,9 @@ public class MijavaCompile {
         StmList t = (new TraceSchedule(b)).stms;
         List<Instr> instrucoes = procFrag.getFrame().codegen(Convert.StmListToArray(t));
 
-        System.out.println("\u005cnInstrucoes:\u005cn");
+       // System.out.println("\u005cnInstrucoes:\u005cn");
         for (int j = 0; j < instrucoes.size(); ++j) {
-            System.out.println(instrucoes.get(j).format(h.tmap));
+      //      System.out.println(instrucoes.get(j).format(h.tmap));
         }
 
         return instrucoes;
@@ -148,24 +148,24 @@ public class MijavaCompile {
     }
 
     private void registerAllocation(List<Instr> instrucoes) {
-        System.out.println("\n* GRAFO DE FLUXO: ");
+        //System.out.println("\n* GRAFO DE FLUXO: ");
         AssemFlowGraph graph = new AssemFlowGraph(Convert.ArrayToInstrList(instrucoes));
         // graph.print();
 
-        System.out.println("Análise de Longevidade: ");
+       // System.out.println("Análise de Longevidade: ");
         Liveness liveness = new Liveness(graph);
-        liveness.print();
+       // liveness.print();
 
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        System.out.println("Grafo de Interferência: ");
+      //  System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+       // System.out.println("Grafo de Interferência: ");
         InterferenceGraph inGraph = new InterferenceGraph(liveness);
-        inGraph.print();
+        //inGraph.print();
 
-        System.out.println("\n--- Alocação de Registradores ---");
+       // System.out.println("\n--- Alocação de Registradores ---");
 
         RegAlloc regAlloc = new RegAlloc(frame, Convert.ArrayToInstrList(instrucoes), inGraph);
 
-        System.out.println("\n[Resultado da Alocação de Registradores:]");
+      //  System.out.println("\n[Resultado da Alocação de Registradores:]");
 
         Set<Temp> printed = new HashSet<>();
         Map<Temp, String> allocMap = new java.util.HashMap<>();
@@ -174,7 +174,7 @@ public class MijavaCompile {
             Temp t = inGraph.gtemp(nodes.head);
             if (t != null && !printed.contains(t)) {
                 String reg = regAlloc.tempMap(t);
-                System.out.println(t + " -> " + (reg != null ? reg : "[não alocado]"));
+              //  System.out.println(t + " -> " + (reg != null ? reg : "[não alocado]"));
                 if (reg != null) {
                     allocMap.put(t, reg);
                 }

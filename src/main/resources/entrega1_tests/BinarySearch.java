@@ -51,7 +51,7 @@ class BS{
 	int aux01 ;
 	int nt ;
 
-	aux01 = true ;
+	aux01 = 6;
 	bs01 = false ;
 	right = number.length ;
 	right = right - 1 ;
