@@ -1,6 +1,8 @@
 package com.example.mijava.temp;
 
-public class TempList {
+import com.example.mijava.utils.List;
+
+public class TempList extends List<Temp> {
    public Temp head;
    public TempList tail;
 

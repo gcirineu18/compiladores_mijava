@@ -13,7 +13,7 @@ Totalmente concluída ✅
 Totalmente concluída ✅
 
 ### Entrega 5 - Análise de Longevidade e Alocação de Registradores:
-A fazer... ⏳
+Parcialmente concluída (faltando a implementação do spilling) ✅
 
 ## Dependências
 * Antlr4: https://www.antlr.org/
@@ -35,5 +35,5 @@ cd team-08
 
 4. Execute o compilador colando no terminal o seguinte comando:
 ```bash
-mvn spring-boot: run
+mvn spring-boot:run
 ```

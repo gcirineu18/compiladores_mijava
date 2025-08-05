@@ -3,13 +3,17 @@ package com.example.mijava.mijava;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
 
+import com.example.mijava.FlowGraph.AssemFlowGraph;
 import com.example.mijava.antlr.MijavaLexer;
 import com.example.mijava.antlr.MijavaParser;
 import com.example.mijava.asem.Instr;
@@ -18,13 +22,18 @@ import com.example.mijava.ast.ASTNode;
 import com.example.mijava.canon.BasicBlocks;
 import com.example.mijava.canon.Canon;
 import com.example.mijava.canon.TraceSchedule;
+import com.example.mijava.graph.Node;
 import com.example.mijava.irtree.Print;
 import com.example.mijava.irtree.StmList;
 import com.example.mijava.mips.Codegen;
 import com.example.mijava.mips.MipsFrame;
+import com.example.mijava.regAlloc.InterferenceGraph;
+import com.example.mijava.regAlloc.Liveness;
+import com.example.mijava.regAlloc.RegAlloc;
 import com.example.mijava.symbol.SymTabScopeNode;
 import com.example.mijava.temp.CombineMap;
 import com.example.mijava.temp.DefaultMap;
+import com.example.mijava.temp.Temp;
 import com.example.mijava.utils.Convert;
 import com.example.mijava.visitor.ASTBuilderVisitor;
 import com.example.mijava.visitor.IRTree.IRTreeVisitor;
@@ -38,13 +47,11 @@ public class MijavaCompile {
 
     public void compile(String filePath) throws IOException {
 
-      ParseTree tree = parsedTree(filePath);
+        ParseTree tree = parsedTree(filePath);
 
-      mainScope = buildAST(tree);
+        mainScope = buildAST(tree);
 
-       buildIRTree();
-
-      //instructionSelection(traceSchedule);
+        buildIRTree();
 
     }
 
@@ -53,60 +60,58 @@ public class MijavaCompile {
         CharStream input = CharStreams.fromFileName(filePath);
         MijavaLexer lexer = new MijavaLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
-        MijavaParser parser = new MijavaParser(tokens);      
+        MijavaParser parser = new MijavaParser(tokens);
         ParseTree tree = parser.program();
-        
-         //System.out.println(tree.toStringTree(parser));
+
+        // System.out.println(tree.toStringTree(parser));
         return tree;
 
     }
 
-    private SymTabScopeNode buildAST(ParseTree tree){
-         ASTBuilderVisitor ASTvisitor = new ASTBuilderVisitor();
-         root = ASTvisitor.visit(tree);
-      // System.out.println(root.printNode());
+    private SymTabScopeNode buildAST(ParseTree tree) {
+        ASTBuilderVisitor ASTvisitor = new ASTBuilderVisitor();
+        root = ASTvisitor.visit(tree);
+        // System.out.println(root.printNode());
 
-         SymTabScopeNode globalScope = new SymTabScopeNode("global", null);
+        SymTabScopeNode globalScope = new SymTabScopeNode("global", null);
 
         root.createSymTab(globalScope);
-        //ASTNode.printSymTabScope();
+        // ASTNode.printSymTabScope();
 
         root.typeCheck(globalScope);
-        for( String erro: ASTNode.semanticErrorMsg){
-            System.out.println(erro);    
+        for (String erro : ASTNode.semanticErrorMsg) {
+            System.out.println(erro);
         }
-        
+
         return ASTNode.mainScope;
     }
 
-
-    private void buildIRTree(){
+    private void buildIRTree() {
 
         IRTreeVisitor irTree = new IRTreeVisitor(mainScope, frame);
         root.accept(irTree);
 
-        //printIRTree(irTree);
+        // printIRTree(irTree);
         printCanonicalTree(irTree);
 
     }
 
-
-    private static void printIRTree( IRTreeVisitor irTree){
+    private static void printIRTree(IRTreeVisitor irTree) {
         var frag = irTree.getInitialFrag().getNext();
-       while (frag != null) {
-       if (frag instanceof ProcFrag procFrag) {
-               System.out.println("\n--- Método: " + procFrag.getFrame().name + " ---");
-               System.out.println(procFrag.getBody()); 
-       }
-       frag = frag.getNext();
-       }
+        while (frag != null) {
+            if (frag instanceof ProcFrag procFrag) {
+                System.out.println("\n--- Método: " + procFrag.getFrame().name + " ---");
+                System.out.println(procFrag.getBody());
+            }
+            frag = frag.getNext();
+        }
     }
 
-    private  void printCanonicalTree(IRTreeVisitor irTree){
+    private void printCanonicalTree(IRTreeVisitor irTree) {
         // Para percorrer todos os fragmentos e aplicar a canonização em cada um
         var currentFrag = irTree.getInitialFrag().getNext();
-        System.out.println("\n>> Intermediate Canonical Code <<");
-
+        //System.out.println("\n>> Intermediate Canonical Code <<");
+        List<Instr> instrucoes;
         while (currentFrag != null) {
             if (currentFrag instanceof ProcFrag procFrag) {
                 System.out.println("\n--- Método: " + procFrag.getFrame().name + " ---");
@@ -115,28 +120,83 @@ public class MijavaCompile {
 
                 var canonIRTree = new TraceSchedule(new BasicBlocks(Canon.linearize(procFrag.getBody())));
 
-                for (var i = canonIRTree.stms; i != null; i = i.tail) {
-                    System.out.println(i.head);
-                }
-              
-              instructionSelection(procFrag, h);
+                // for (var i = canonIRTree.stms; i != null; i = i.tail) {
+                // System.out.println(i.head);
+                // }
+
+                instrucoes = instructionSelection(procFrag, h);
+                registerAllocation(instrucoes);
+
             }
             currentFrag = currentFrag.getNext();
         }
     }
 
-     private void instructionSelection( ProcFrag procFrag, Print h){
-        StmList statements = Canon.linearize(procFrag.getBody());  
+    private List<Instr> instructionSelection(ProcFrag procFrag, Print h) {
+        StmList statements = Canon.linearize(procFrag.getBody());
         BasicBlocks b = new BasicBlocks(statements);
-        StmList t = (new TraceSchedule(b)).stms; 
+        StmList t = (new TraceSchedule(b)).stms;
         List<Instr> instrucoes = procFrag.getFrame().codegen(Convert.StmListToArray(t));
 
-                System.out.println("\u005cnInstrucoes:\u005cn");
+       // System.out.println("\u005cnInstrucoes:\u005cn");
         for (int j = 0; j < instrucoes.size(); ++j) {
-            System.out.println(instrucoes.get(j).format(h.tmap));
+      //      System.out.println(instrucoes.get(j).format(h.tmap));
         }
+
+        return instrucoes;
 
     }
 
-    
+    private void registerAllocation(List<Instr> instrucoes) {
+        //System.out.println("\n* GRAFO DE FLUXO: ");
+        AssemFlowGraph graph = new AssemFlowGraph(Convert.ArrayToInstrList(instrucoes));
+        // graph.print();
+
+       // System.out.println("Análise de Longevidade: ");
+        Liveness liveness = new Liveness(graph);
+       // liveness.print();
+
+      //  System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+       // System.out.println("Grafo de Interferência: ");
+        InterferenceGraph inGraph = new InterferenceGraph(liveness);
+        //inGraph.print();
+
+       // System.out.println("\n--- Alocação de Registradores ---");
+
+        RegAlloc regAlloc = new RegAlloc(frame, Convert.ArrayToInstrList(instrucoes), inGraph);
+
+      //  System.out.println("\n[Resultado da Alocação de Registradores:]");
+
+        Set<Temp> printed = new HashSet<>();
+        Map<Temp, String> allocMap = new java.util.HashMap<>();
+
+        for (com.example.mijava.utils.List<Node> nodes = inGraph.nodes(); nodes != null; nodes = nodes.tail) {
+            Temp t = inGraph.gtemp(nodes.head);
+            if (t != null && !printed.contains(t)) {
+                String reg = regAlloc.tempMap(t);
+              //  System.out.println(t + " -> " + (reg != null ? reg : "[não alocado]"));
+                if (reg != null) {
+                    allocMap.put(t, reg);
+                }
+                printed.add(t);
+            }
+        }
+
+        // Imprime as instruções usando os registradores físicos
+        System.out.println("\n--- Instruções com registradores físicos ---\n");
+        printPhysicalInstructions(Convert.ArrayToInstrList(instrucoes), allocMap);
+    }
+
+    public static void printPhysicalInstructions(InstrList instrs, Map<Temp, String> allocMap) {
+        for (InstrList il = instrs; il != null; il = il.tail) {
+            String instr = il.head.format(null); // Usa o método format para obter a string da instrução
+            for (Map.Entry<Temp, String> entry : allocMap.entrySet()) {
+                instr = instr.replaceAll(
+                        "\\b" + entry.getKey().toString() + "\\b",
+                        java.util.regex.Matcher.quoteReplacement(entry.getValue()));
+            }
+            System.out.println(instr);
+        }
+    }
+
 }
